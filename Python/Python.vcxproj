@@ -139,12 +139,22 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LevelSelectScene.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainMenuScene.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneMenager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Fonts\arial.ttf" />
     <Font Include="Fonts\blocked.ttf" />
     <Font Include="Fonts\blocks.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LevelSelectScene.h" />
+    <ClInclude Include="MainMenuScene.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneMenager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
