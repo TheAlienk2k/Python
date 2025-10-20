@@ -1,6 +1,11 @@
 #pragma once
 #include "Scene.h"
 #include "SceneMenager.h"
+#include "LevelMenager.h"
+
+#include <vector>
+#include <filesystem>
+#include <string>
 
 using namespace std;
 
@@ -8,6 +13,9 @@ class LevelSelectScene : public Scene
 {
 private:
 	SceneMenager* menager;
+	vector<string> levelArray;
+	int currentLevelIndex = 0;
+
 
 	sf::Font titleFont;
 	sf::Font buttonsFont;
@@ -27,6 +35,8 @@ public:
 		,selectedLevelText(buttonsFont)
 		,backBtn(buttonsFont)
 	{
+		LevelMenager levelMenager("Levels");
+		levelArray = levelMenager.getLevelNames();;
 
 		if (!titleFont.openFromFile("Fonts/blocked.ttf")) {
 			cout << "Blad w ladowaniu czcionki" << "\n";
@@ -54,7 +64,7 @@ public:
 		previousLevelBtn.setPosition(sf::Vector2f(50.0, 240.0));
 
 		selectedLevelText.setFont(buttonsFont);
-		selectedLevelText.setString("LEVEL 1");
+		selectedLevelText.setString(levelArray.at(currentLevelIndex));
 		selectedLevelText.setCharacterSize(180);
 		selectedLevelText.setFillColor(sf::Color::Yellow);
 		selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, 200.0));
@@ -62,13 +72,56 @@ public:
 		backBtn.setFont(buttonsFont);
 		backBtn.setString("<BACK");
 		backBtn.setCharacterSize(100);
-		backBtn.setFillColor(sf::Color::Green);
+		backBtn.setFillColor(sf::Color::White);
 		backBtn.setPosition(sf::Vector2f(30.0, 650.0));
-
 
 	}
 
 	void eventHandler(sf::Event event, sf::RenderWindow& gameWindow) override {
+
+		if (event.is<sf::Event::MouseMoved>()) {
+
+			if (backBtn.getFillColor() == sf::Color::White
+				&& backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+
+				backBtn.setString("< BACK");
+				backBtn.setFillColor(sf::Color::Green);
+			}
+			else if (backBtn.getFillColor() == sf::Color::Green
+				&& !backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+
+				backBtn.setString("<BACK");
+				backBtn.setFillColor(sf::Color::White);
+			}
+		}
+
+
+		if (event.is<sf::Event::MouseButtonPressed>() && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+			
+			if (nextLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+				if (currentLevelIndex == levelArray.size()-1) {
+					currentLevelIndex = 0;
+				}
+				else {
+					currentLevelIndex++;
+				}
+				selectedLevelText.setString(levelArray.at(currentLevelIndex));
+				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
+			}
+			else if (previousLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+				if (currentLevelIndex == 0) {
+					currentLevelIndex = levelArray.size()-1;
+				}
+				else {
+					currentLevelIndex--;
+				}
+				selectedLevelText.setString(levelArray.at(currentLevelIndex));
+				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
+			}
+			else if (backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+				menager->loadMainMenu();
+			}
+		}
 
 	}
 
