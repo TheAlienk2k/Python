@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "MainMenuScene.h"
 #include "SceneMenager.h"
+
 using namespace std;
 
 int main()
@@ -12,6 +13,7 @@ int main()
 
     SceneMenager menager(gameWindow);
     menager.loadMainMenu();
+
 
     while (gameWindow.isOpen())
     {

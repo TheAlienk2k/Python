@@ -56,4 +56,12 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Levels\dhdsfgh.txt" />
+    <Text Include="Levels\gdfhgfahgshdaah.txt" />
+    <Text Include="Levels\Level dsads.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Levels\dsds.pdf" />
+  </ItemGroup>
 </Project>

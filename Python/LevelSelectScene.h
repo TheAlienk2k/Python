@@ -12,14 +12,17 @@ using namespace std;
 class LevelSelectScene : public Scene
 {
 private:
-	SceneMenager* menager;
+	SceneMenager* sceneMenager;  
+	LevelMenager levelMenager;
 	vector<string> levelArray;
+	vector<vector<char>> selectedLevelBoard; 
 	int currentLevelIndex = 0;
 
 
 	sf::Font titleFont;
 	sf::Font buttonsFont;
 	sf::Text titleText;
+	sf::Text playBtn;
 	sf::Text nextLevelBtn;
 	sf::Text previousLevelBtn;
 	sf::Text selectedLevelText;
@@ -28,14 +31,16 @@ private:
 
 public:
 	LevelSelectScene(sf::RenderWindow& gameWindow, SceneMenager* menag)
-		:menager(menag) 
+		:sceneMenager(menag) 
+		,levelMenager("Levels")
 		,titleText(titleFont)
+		,playBtn(buttonsFont)
 		,nextLevelBtn(buttonsFont)
 		,previousLevelBtn(buttonsFont)
 		,selectedLevelText(buttonsFont)
 		,backBtn(buttonsFont)
 	{
-		LevelMenager levelMenager("Levels");
+
 		levelArray = levelMenager.getLevelNames();;
 
 		if (!titleFont.openFromFile("Fonts/blocked.ttf")) {
@@ -65,6 +70,7 @@ public:
 
 		selectedLevelText.setFont(buttonsFont);
 		selectedLevelText.setString(levelArray.at(currentLevelIndex));
+		selectedLevelBoard = levelMenager.getBoardByName(levelArray.at(currentLevelIndex));  
 		selectedLevelText.setCharacterSize(180);
 		selectedLevelText.setFillColor(sf::Color::Yellow);
 		selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, 200.0));
@@ -74,6 +80,12 @@ public:
 		backBtn.setCharacterSize(100);
 		backBtn.setFillColor(sf::Color::White);
 		backBtn.setPosition(sf::Vector2f(30.0, 650.0));
+
+		playBtn.setFont(buttonsFont);
+		playBtn.setString("PLAY");
+		playBtn.setCharacterSize(140);
+		playBtn.setFillColor(sf::Color::White);
+		playBtn.setPosition(sf::Vector2f((gameWindow.getSize().x - playBtn.getLocalBounds().size.x) / 2, 400.0));
 
 	}
 
@@ -93,6 +105,16 @@ public:
 				backBtn.setString("<BACK");
 				backBtn.setFillColor(sf::Color::White);
 			}
+
+			else if (playBtn.getFillColor() == sf::Color::White
+				&& playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+				playBtn.setFillColor(sf::Color::Green);
+			}
+			else if (playBtn.getFillColor() == sf::Color::Green
+				&& !playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+				playBtn.setFillColor(sf::Color::White);
+			}
+
 		}
 
 
@@ -106,6 +128,7 @@ public:
 					currentLevelIndex++;
 				}
 				selectedLevelText.setString(levelArray.at(currentLevelIndex));
+				selectedLevelBoard = levelMenager.getBoardByName(levelArray.at(currentLevelIndex));  
 				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
 			}
 			else if (previousLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
@@ -116,13 +139,13 @@ public:
 					currentLevelIndex--;
 				}
 				selectedLevelText.setString(levelArray.at(currentLevelIndex));
+				selectedLevelBoard = levelMenager.getBoardByName(levelArray.at(currentLevelIndex));
 				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
 			}
 			else if (backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				menager->loadMainMenu();
+				sceneMenager->loadMainMenu();
 			}
 		}
-
 	}
 
 	void render(sf::RenderWindow& gameWindow) {
@@ -131,6 +154,7 @@ public:
 		gameWindow.draw(previousLevelBtn);
 		gameWindow.draw(selectedLevelText);
 		gameWindow.draw(backBtn);
+		gameWindow.draw(playBtn);
 	}
 };
 
