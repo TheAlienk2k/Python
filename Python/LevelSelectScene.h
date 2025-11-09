@@ -134,6 +134,8 @@ public:
 		}
 	}
 
+	void update(float deltaTime) override {}
+
 	void render(sf::RenderWindow& gameWindow) override {
 		gameWindow.draw(titleText);
 		gameWindow.draw(nextLevelBtn);

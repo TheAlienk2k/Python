@@ -13,8 +13,16 @@ int main()
     sf::RenderWindow gameWindow(sf::VideoMode({ 1366, 768 }), "Python The Game", sf::Style::Titlebar | sf::Style::Close);
     LevelMenager levelMenager("Levels");
 
-    SceneMenager menager(gameWindow, levelMenager);
-    menager.loadMainMenu();
+    const float maxFps = 60.0f;
+    const sf::Time frameTime = sf::seconds(1.0f / maxFps);
+
+    sf::Clock gameClock;
+    sf::Time frameAccumulator = sf::Time::Zero;
+
+    SceneMenager sceneMenager(gameWindow, levelMenager);
+    sceneMenager.loadMainMenu();
+
+    bool stateChanged = true;
 
 
     while (gameWindow.isOpen())
@@ -27,13 +35,26 @@ int main()
             }
 
             if (event.has_value()) {
-                menager.currentScene->eventHandler(event.value(), gameWindow);
+                sceneMenager.currentScene->eventHandler(event.value(), gameWindow);
+                stateChanged == true;
             }
         }
 
-        gameWindow.clear(sf::Color::Black);
-        menager.currentScene->render(gameWindow);
-        gameWindow.display();
+        sf::Time deltaTime = gameClock.restart();
+        frameAccumulator += deltaTime;
+        while (frameAccumulator >= frameTime) {
+            sceneMenager.currentScene->update(frameTime.asSeconds());
+            stateChanged == true;
+            frameAccumulator -= frameTime;
+        }
+
+        if (stateChanged == true) {                        //Trzeba bedzie to zmeiniæ gdy w przysz³oœci zostan¹ dodane jakieœ animacje np do textury snake
+            gameWindow.clear(sf::Color::Black);
+            sceneMenager.currentScene->render(gameWindow);
+            gameWindow.display();
+
+            stateChanged == false;
+        }
 
     }
     

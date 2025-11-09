@@ -11,6 +11,8 @@ LevelMenager::LevelMenager(const string fName) : folderName(fName), currentLevel
         }
 
     }
+
+    currentLevelBoard = updateBoard();
 }
 
 string LevelMenager::getCurrentLevelName() {
@@ -24,6 +26,8 @@ void LevelMenager::nextLevel() {
     else {
         currentLevel++;
     }
+
+    currentLevelBoard = this->updateBoard();
 }
 
 void LevelMenager::previousLevel() {
@@ -33,9 +37,47 @@ void LevelMenager::previousLevel() {
     else {
         currentLevel--;
     }
+
+    currentLevelBoard = this->updateBoard();
 }
 
-vector<vector<char>> LevelMenager::getCurrentBoard() {
+char LevelMenager::getSnakeDirectionAtStart() {
+    for (int y = 0; y < currentLevelBoard.size(); y++) {
+        for (int x = 0; x < currentLevelBoard[y].size(); x++) {
+            if (currentLevelBoard[y][x] == 'S' || currentLevelBoard[y][x] == 's') {
+                if ((y > 0) && (currentLevelBoard[y - 1][x] == 'D' || currentLevelBoard[y - 1][x] == 'd')) {
+                    return 'w';
+                }
+                else if ((x < currentLevelBoard[y].size()-1) && (currentLevelBoard[y][x + 1] == 'D' || currentLevelBoard[y][x + 1] == 'd')) {
+                    return 'd';
+                }
+                else if ((y < currentLevelBoard.size()-1) && (currentLevelBoard[y + 1][x] == 'D' || currentLevelBoard[y + 1][x] == 'd')) {
+                    return 's';
+                }
+                else if ((x > 0) && (currentLevelBoard[y][x - 1] == 'D' || currentLevelBoard[y][x - 1] == 'd')) {
+                    return 'a';
+                }
+            }
+        }
+    }
+
+    cout << "To nic" << "\n";
+    return 'd';
+}
+
+array<int, 2> LevelMenager::getSnakeCordsAtStart() {
+    for (int y = 0; y < currentLevelBoard.size(); y++) {
+        for (int x = 0; x < currentLevelBoard[y].size(); x++) {
+            if (currentLevelBoard[y][x] == 'S' || currentLevelBoard[y][x] == 's') {
+                return array<int, 2>{x, y};
+            }
+        }
+    }
+
+    return array<int, 2>{0, 0};
+}
+
+vector<vector<char>> LevelMenager::updateBoard() {
     vector<vector<char>> board;
     string fName = levelNames[currentLevel];
     cout << "otwarto: " << folderName + "\\" + fName + ".txt" << "\n";
@@ -63,4 +105,8 @@ vector<vector<char>> LevelMenager::getCurrentBoard() {
 
     file.close();
     return board;
+}
+
+vector<vector<char>> LevelMenager::getLevelBoard() {
+    return currentLevelBoard;
 }

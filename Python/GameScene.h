@@ -30,13 +30,16 @@ private:
 
 	vector<vector<char>> board;
 	Snake snake;
+	//TIMERS --- chyba trzeba znaleœæ coœ lepszego ale dla malej skali jest ok
+	float snakeMoveTimer = 0.0f;
 
 public:
-	GameScene(sf::RenderWindow &gameWindow, SceneMenager* menag, LevelMenager& levelMenager)
+	GameScene(sf::RenderWindow &gameWindow, SceneMenager* menag, LevelMenager& levelMenag)
 	:sceneMenager(menag)
-	,levelMenager(levelMenager)
+	,levelMenager(levelMenag)
 	,exitButton(buttonsFont)
-	,snake(3, 3, 'd', board)   //tymczasowa dla testu
+	,board(levelMenager.getLevelBoard())
+	,snake(levelMenag.getSnakeCordsAtStart()[0], levelMenag.getSnakeCordsAtStart()[1], levelMenag.getSnakeDirectionAtStart(), board)   //tymczasowa dla testu
 	{
 		if (!titleFont.openFromFile("Fonts/blocked.ttf")) {
 			cout << "Blad w ladowaniu czcionki" << "\n";
@@ -50,9 +53,6 @@ public:
 		exitButton.setCharacterSize(60);
 		exitButton.setFillColor(sf::Color::White);
 		exitButton.setPosition(sf::Vector2f((gameWindow.getSize().x - exitButton.getLocalBounds().size.x) - 20.0, 0.0));
-
-
-		board = levelMenager.getCurrentBoard();
 
 	}
 
@@ -80,6 +80,17 @@ public:
 
 		if (auto key = event.getIf<sf::Event::KeyPressed>()) {
 			snake.snakeDirectionChange(*key);
+		}
+	}
+
+	void update(float deltaTime) override {
+		snakeMoveTimer += deltaTime;
+		if (snakeMoveTimer >= 0.2f) {
+			if (snake.getStatus() == true) {
+				snake.snakeMove();
+			}
+
+			snakeMoveTimer = 0.0f;
 		}
 	}
 		
