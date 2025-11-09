@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Scene.h"
+#include "LevelMenager.h"
 #include "MainMenuScene.h"
 #include "SceneMenager.h"
 
@@ -10,8 +11,9 @@ using namespace std;
 int main()
 {
     sf::RenderWindow gameWindow(sf::VideoMode({ 1366, 768 }), "Python The Game", sf::Style::Titlebar | sf::Style::Close);
+    LevelMenager levelMenager("Levels");
 
-    SceneMenager menager(gameWindow);
+    SceneMenager menager(gameWindow, levelMenager);
     menager.loadMainMenu();
 
 

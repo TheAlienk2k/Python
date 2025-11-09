@@ -13,9 +13,7 @@ class LevelSelectScene : public Scene
 {
 private:
 	SceneMenager* sceneMenager;  
-	LevelMenager levelMenager;
-	vector<string> levelArray;
-	vector<vector<char>> selectedLevelBoard; 
+	LevelMenager& levelMenager;
 	int currentLevelIndex = 0;
 
 
@@ -30,9 +28,9 @@ private:
 
 
 public:
-	LevelSelectScene(sf::RenderWindow& gameWindow, SceneMenager* menag)
+	LevelSelectScene(sf::RenderWindow& gameWindow, SceneMenager* menag, LevelMenager& levelMenager)
 		:sceneMenager(menag) 
-		,levelMenager("Levels")
+		,levelMenager(levelMenager)
 		,titleText(titleFont)
 		,playBtn(buttonsFont)
 		,nextLevelBtn(buttonsFont)
@@ -40,8 +38,6 @@ public:
 		,selectedLevelText(buttonsFont)
 		,backBtn(buttonsFont)
 	{
-
-		levelArray = levelMenager.getLevelNames();;
 
 		if (!titleFont.openFromFile("Fonts/blocked.ttf")) {
 			cout << "Blad w ladowaniu czcionki" << "\n";
@@ -69,8 +65,7 @@ public:
 		previousLevelBtn.setPosition(sf::Vector2f(50.0, 240.0));
 
 		selectedLevelText.setFont(buttonsFont);
-		selectedLevelText.setString(levelArray.at(currentLevelIndex));
-		selectedLevelBoard = levelMenager.getBoardByName(levelArray.at(currentLevelIndex));  
+		selectedLevelText.setString(levelMenager.getCurrentLevelName());
 		selectedLevelText.setCharacterSize(180);
 		selectedLevelText.setFillColor(sf::Color::Yellow);
 		selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, 200.0));
@@ -83,9 +78,9 @@ public:
 
 		playBtn.setFont(buttonsFont);
 		playBtn.setString("PLAY");
-		playBtn.setCharacterSize(140);
+		playBtn.setCharacterSize(100);
 		playBtn.setFillColor(sf::Color::White);
-		playBtn.setPosition(sf::Vector2f((gameWindow.getSize().x - playBtn.getLocalBounds().size.x) / 2, 400.0));
+		playBtn.setPosition(sf::Vector2f((gameWindow.getSize().x - playBtn.getLocalBounds().size.x) / 2, 380.0));
 
 	}
 
@@ -121,34 +116,25 @@ public:
 		if (event.is<sf::Event::MouseButtonPressed>() && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 			
 			if (nextLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				if (currentLevelIndex == levelArray.size()-1) {
-					currentLevelIndex = 0;
-				}
-				else {
-					currentLevelIndex++;
-				}
-				selectedLevelText.setString(levelArray.at(currentLevelIndex));
-				selectedLevelBoard = levelMenager.getBoardByName(levelArray.at(currentLevelIndex));  
+				levelMenager.nextLevel();
+				selectedLevelText.setString(levelMenager.getCurrentLevelName());
 				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
 			}
 			else if (previousLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				if (currentLevelIndex == 0) {
-					currentLevelIndex = levelArray.size()-1;
-				}
-				else {
-					currentLevelIndex--;
-				}
-				selectedLevelText.setString(levelArray.at(currentLevelIndex));
-				selectedLevelBoard = levelMenager.getBoardByName(levelArray.at(currentLevelIndex));
+				levelMenager.previousLevel();
+				selectedLevelText.setString(levelMenager.getCurrentLevelName());
 				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
 			}
 			else if (backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
 				sceneMenager->loadMainMenu();
 			}
+			else if (playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+				sceneMenager->loadGameScene();
+			}
 		}
 	}
 
-	void render(sf::RenderWindow& gameWindow) {
+	void render(sf::RenderWindow& gameWindow) override {
 		gameWindow.draw(titleText);
 		gameWindow.draw(nextLevelBtn);
 		gameWindow.draw(previousLevelBtn);

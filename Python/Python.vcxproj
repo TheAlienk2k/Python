@@ -139,12 +139,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="LevelMenager.cpp" />
     <ClCompile Include="LevelSelectScene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainMenuScene.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneMenager.cpp" />
+    <ClCompile Include="Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Fonts\arial.ttf" />
@@ -152,11 +154,13 @@
     <Font Include="Fonts\blocks.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="LevelMenager.h" />
     <ClInclude Include="LevelSelectScene.h" />
     <ClInclude Include="MainMenuScene.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneMenager.h" />
+    <ClInclude Include="Snake.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Levels\dhdsfgh.txt">
@@ -177,9 +181,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-	<ItemGroup>
-		<Content Include="Levels\**">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
+  <ItemGroup>
+    <Content Include="Levels\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
