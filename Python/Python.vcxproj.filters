@@ -76,4 +76,9 @@
   <ItemGroup>
     <None Include="Levels\dsds.pdf" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\SnakeTextures\Face.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

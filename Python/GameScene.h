@@ -19,6 +19,7 @@ private:
 
 	sf::Font titleFont;
 	sf::Font buttonsFont;
+	sf::Texture headTexture;
 	sf::Text exitButton;
 
 	const sf::Color snakeColor  = sf::Color::Green;
@@ -30,8 +31,6 @@ private:
 
 	vector<vector<char>> board;
 	Snake snake;
-	//TIMERS --- chyba trzeba znaleœæ coœ lepszego ale dla malej skali jest ok
-	float snakeMoveTimer = 0.0f;
 
 public:
 	GameScene(sf::RenderWindow &gameWindow, SceneMenager* menag, LevelMenager& levelMenag)
@@ -46,6 +45,10 @@ public:
 		}
 		if (!buttonsFont.openFromFile("Fonts/blocks.ttf")) {
 			cout << "Blad w ladowaniu czcionki" << "\n";
+		}
+
+		if (!headTexture.loadFromFile("Textures/SnakeTextures/Head.png")) {
+			cout << "Blad w ladowaniu tekstury glowy" << "\n";
 		}
 
 		exitButton.setFont(buttonsFont);
@@ -84,14 +87,7 @@ public:
 	}
 
 	void update(float deltaTime) override {
-		snakeMoveTimer += deltaTime;
-		if (snakeMoveTimer >= 0.2f) {
-			if (snake.getStatus() == true) {
-				snake.snakeMove();
-			}
-
-			snakeMoveTimer = 0.0f;
-		}
+		snake.snakeMove(deltaTime);
 	}
 		
 	void render(sf::RenderWindow& gameWindow) {
@@ -124,9 +120,26 @@ public:
 		sf::RectangleShape snakeBlock(sf::Vector2f(boardBlockSize, boardBlockSize));
 		snakeBlock.setFillColor(snakeColor);
 
-		for (array<int, 2> cord: snake.getSnakeCords()) {
+		bool isHead = true;
+
+		for (array<int, 2> cord : snake.getSnakeCords()) {
 			snakeBlock.setPosition(sf::Vector2f(boardMarginX + (cord[0] * (boardBlockMargin + boardBlockSize)), boardMarginY + (cord[1] * (boardBlockMargin + boardBlockSize))));
 			gameWindow.draw(snakeBlock);
+
+			if (isHead) {
+				sf::Sprite snakeHead(headTexture);
+				snakeHead.setTextureRect(sf::IntRect({ 0,0 }, { 32, 32 }));
+				snakeHead.setOrigin(sf::Vector2f(snakeHead.getGlobalBounds().getCenter().x, snakeHead.getGlobalBounds().getCenter().y));
+				snakeHead.setScale(sf::Vector2f(static_cast<float>(boardBlockSize)/32.f, static_cast<float>(boardBlockSize)/32.f));
+				snakeHead.setPosition(sf::Vector2f(boardMarginX + (cord[0] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize/2), boardMarginY + (cord[1] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize / 2)));
+
+				if (snake.getDirection() == 'd') snakeHead.setRotation(sf::degrees(90.f));
+				else if (snake.getDirection() == 's') snakeHead.setRotation(sf::degrees(180.f));
+				else if (snake.getDirection() == 'a') snakeHead.setRotation(sf::degrees(270.f));
+				
+				gameWindow.draw(snakeHead);
+				isHead = false;
+			}
 		}
 	}
 

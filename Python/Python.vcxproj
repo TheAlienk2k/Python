@@ -186,4 +186,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\SnakeTextures\Face.png" />
+  </ItemGroup>
 </Project>
