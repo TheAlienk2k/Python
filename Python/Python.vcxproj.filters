@@ -39,6 +39,12 @@
     <ClCompile Include="Snake.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Food.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="FoodMenager.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Fonts\blocks.ttf" />
@@ -67,6 +73,12 @@
     <ClInclude Include="Snake.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="Food.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="FoodMenager.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Levels\dhdsfgh.txt" />
@@ -78,6 +90,30 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\SnakeTextures\Face.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="Textures\SnakeTextures\Head.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="Textures\FoodTextures\bananFood.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="Textures\FoodTextures\basicFood.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="Textures\FoodTextures\godFood.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="Textures\FoodTextures\lemonFood.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="Textures\FoodTextures\mysteriousFood.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="Textures\FoodTextures\rottenFood.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="Textures\FoodTextures\spicyFood.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
   </ItemGroup>

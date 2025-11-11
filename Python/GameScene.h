@@ -38,7 +38,7 @@ public:
 	,levelMenager(levelMenag)
 	,exitButton(buttonsFont)
 	,board(levelMenager.getLevelBoard())
-	,snake(levelMenag.getSnakeCordsAtStart()[0], levelMenag.getSnakeCordsAtStart()[1], levelMenag.getSnakeDirectionAtStart(), board)   //tymczasowa dla testu
+	,snake(levelMenag.getSnakeCordsAtStart()[0], levelMenag.getSnakeCordsAtStart()[1], levelMenag.getSnakeDirectionAtStart())   //tymczasowa dla testu
 	{
 		if (!titleFont.openFromFile("Fonts/blocked.ttf")) {
 			cout << "Blad w ladowaniu czcionki" << "\n";
@@ -60,6 +60,7 @@ public:
 	}
 
 	void eventHandler(sf::Event event, sf::RenderWindow& gameWindow) override {
+
 		if (event.is<sf::Event::MouseMoved>()) {
 			if (exitButton.getFillColor() == sf::Color::White
 				&& exitButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
@@ -87,7 +88,7 @@ public:
 	}
 
 	void update(float deltaTime) override {
-		snake.snakeMove(deltaTime);
+		snake.snakeMove(deltaTime, board);
 	}
 		
 	void render(sf::RenderWindow& gameWindow) {
@@ -100,19 +101,14 @@ public:
 		sf::RectangleShape block(sf::Vector2f(boardBlockSize, boardBlockSize));
 		block.setFillColor(boardWallColor);
 
-		int currentBlockX = boardMarginX;
-		int currentBlockY = boardMarginY;
-		for (int i = 0; i < board.size(); i++) {
-			for (int j = 0; j < board[i].size(); j++)
+		for (int y = 0; y < board.size(); y++) {
+			for (int x = 0; x < board[y].size(); x++)
 			{
-				if (board[i][j] == '#') {
-					block.setPosition(sf::Vector2f(currentBlockX, currentBlockY));
+				if (board[y][x] == '#') {
+					block.setPosition(sf::Vector2f(boardMarginX + (x * boardBlockMargin) + (x * boardBlockSize), boardMarginY + (y * boardBlockMargin) + (y * boardBlockSize)));
 					gameWindow.draw(block);
 				}
-				currentBlockX += boardBlockMargin + boardBlockSize;
 			}
-			currentBlockX = boardMarginX;
-			currentBlockY += boardBlockMargin + boardBlockSize;
 		}
 	}
 
@@ -121,7 +117,6 @@ public:
 		snakeBlock.setFillColor(snakeColor);
 
 		bool isHead = true;
-
 		for (array<int, 2> cord : snake.getSnakeCords()) {
 			snakeBlock.setPosition(sf::Vector2f(boardMarginX + (cord[0] * (boardBlockMargin + boardBlockSize)), boardMarginY + (cord[1] * (boardBlockMargin + boardBlockSize))));
 			gameWindow.draw(snakeBlock);

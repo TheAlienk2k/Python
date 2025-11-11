@@ -139,6 +139,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Food.cpp" />
+    <ClCompile Include="FoodMenager.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="LevelMenager.cpp" />
     <ClCompile Include="LevelSelectScene.cpp" />
@@ -154,6 +156,8 @@
     <Font Include="Fonts\blocks.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Food.h" />
+    <ClInclude Include="FoodMenager.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="LevelMenager.h" />
     <ClInclude Include="LevelSelectScene.h" />
@@ -187,6 +191,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Textures\FoodTextures\bananFood.png" />
+    <Image Include="Textures\FoodTextures\basicFood.png" />
+    <Image Include="Textures\FoodTextures\godFood.png" />
+    <Image Include="Textures\FoodTextures\lemonFood.png" />
+    <Image Include="Textures\FoodTextures\mysteriousFood.png" />
+    <Image Include="Textures\FoodTextures\rottenFood.png" />
+    <Image Include="Textures\FoodTextures\spicyFood.png" />
     <Image Include="Textures\SnakeTextures\Face.png" />
+    <Image Include="Textures\SnakeTextures\Head.png" />
   </ItemGroup>
 </Project>

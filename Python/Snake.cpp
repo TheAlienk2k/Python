@@ -1,1 +1,148 @@
 #include "Snake.h"
+
+#include <iostream>
+#include <algorithm>
+#include <utility>
+
+#include "food.h"
+
+Snake::Snake(int x, int y, char direction)
+{
+	snakeBlocksCords.insert(snakeBlocksCords.begin(), std::array<int, 2>{x , y});
+	currentDirection = direction;
+}
+
+void Snake::snakeDirectionChange(const sf::Event::KeyPressed& key) {
+	if (isAlive == false) return;
+
+	if ((key.code == sf::Keyboard::Key::W)) {
+		if ((!inputQueue.empty() && inputQueue.size() <= inputQueueMaxSize && inputQueue.back() != 's')
+			|| (inputQueue.empty() && currentDirection != 's')) {
+			inputQueue.push('w');
+		}
+	}
+	else if ((key.code == sf::Keyboard::Key::S)) {
+		if ((!inputQueue.empty() && inputQueue.size() <= inputQueueMaxSize && inputQueue.back() != 'w')
+			|| (inputQueue.empty() && currentDirection != 'w')) {
+			inputQueue.push('s');
+		}
+	}
+	else if(key.code == sf::Keyboard::Key::A) {
+		if ((!inputQueue.empty() && inputQueue.size() <= inputQueueMaxSize && inputQueue.back() != 'd')
+			|| (inputQueue.empty() && currentDirection != 'd')) {
+			inputQueue.push('a');
+		}
+	}
+	else if(key.code == sf::Keyboard::Key::D) {
+		if ((!inputQueue.empty() && inputQueue.size() <= inputQueueMaxSize && inputQueue.back() != 'a')
+			|| (inputQueue.empty() && currentDirection != 'a')) {
+			inputQueue.push('d');
+		}
+	}
+}
+
+void Snake::snakeMove(float deltaTime, std::vector<std::vector<char>>& board) {
+	snakeMoveTimer += deltaTime;
+
+	if (snakeMoveTimer >= snakeMaxMoveTime && isAlive) {
+		int snakeHeadX = snakeBlocksCords.at(0)[0];
+		int snakeHeadY = snakeBlocksCords.at(0)[1];
+		std::cout << "kierunek w snaku " << currentDirection << "\n";
+
+		std::array<int, 2> directionChange;
+
+		if(currentDirection == 'w') directionChange = {0, -1};
+		else if (currentDirection == 's') directionChange = { 0, 1 };
+		else if (currentDirection == 'a') directionChange = { -1, 0 };
+		else if (currentDirection == 'd') directionChange = { 1, 0 };
+
+		int newX = snakeHeadX + directionChange[0];
+		int newY = snakeHeadY + directionChange[1];
+
+		if (isValidMove(newX, newY, board)) {
+			snakeBlocksCords.insert(snakeBlocksCords.begin(), { newX, newY });
+
+			if (snakeBlocksCords.size() > snakeLength) {
+				snakeBlocksCords.pop_back();
+			}
+		}
+		else {
+			snakeDeath();
+		}
+
+		if (!inputQueue.empty()) {
+			currentDirection = inputQueue.front();
+			inputQueue.pop();
+		}
+
+		snakeMoveTimer = 0.0f;
+	}
+}
+
+bool Snake::isValidMove(int &x, int &y, std::vector<std::vector<char>> &board) {
+
+	if (x < 0) {
+		x = board[y].size() - 1;
+	}
+	else if (x > board[y].size()-1) {
+		x = 0;
+	}
+
+	if (y < 0) {
+		y = board.size() - 1;
+	}
+	else if (y > board.size() - 1) {
+		y = 0;
+	}
+
+	if (board[y][x] == '#') return false;
+
+	auto it = std::find(snakeBlocksCords.begin() + 1, snakeBlocksCords.end(), std::array<int,2>{ x, y });
+	return (it == snakeBlocksCords.end());
+}
+
+void Snake::snakeDeath() {
+	isAlive = false;
+	std::queue<char> emptyQueue;
+	std::swap(inputQueue, emptyQueue);
+}
+
+bool Snake::getStatus() {
+	return isAlive;
+}
+
+void Snake::snakeEat(Food& food) {
+	snakeLength++;
+	food.applyEffect(*this);
+	currentEffects.push_back(&food);
+}
+
+void Snake::snakeVomit() {
+	snakeLength--;
+}
+
+void Snake::addScore(int amount) {
+	score += amount;
+
+	std::cout << "Obecny wynik to: " << score << "\n";
+}
+
+int Snake::getScore() {
+	return score;
+}
+
+char Snake::getDirection() {
+	return currentDirection;
+}
+
+const std::vector<std::array<int, 2>>& Snake::getSnakeCords() const{
+	return snakeBlocksCords;
+}
+
+float Snake::getMaxMoveTime() {
+	return snakeMaxMoveTime;
+}
+
+void Snake::setMaxMoveTime(float maxTime) {
+	snakeMaxMoveTime = maxTime;
+}
