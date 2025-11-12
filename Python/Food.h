@@ -2,13 +2,14 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <array>
+#include <string>
 
 class Snake; // forward declaration
 
 class Food
 {
 protected:
-	sf::Texture texture;
+	const sf::Texture* texture = nullptr;
 	std::array<int, 2> coordinates{};
 	float effectDurration;
 
@@ -18,7 +19,7 @@ public:
 
 	float getEffectDurration() { return effectDurration; }
 	std::array<int, 2> getCoordinates() { return coordinates; }
-	sf::Texture getTexture() { return texture; }
+	const sf::Texture& getTexture() const { return *texture; }
 	void setCoordinates(int x, int y) { coordinates[0] = x; coordinates[1] = y; }
 
 	virtual void applyEffect(Snake& snake) = 0;

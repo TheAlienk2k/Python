@@ -4,7 +4,8 @@
 #include <algorithm>
 #include <utility>
 
-#include "food.h"
+#include "Food.h"
+#include "FoodMenager.h"
 
 Snake::Snake(int x, int y, char direction)
 {
@@ -41,7 +42,7 @@ void Snake::snakeDirectionChange(const sf::Event::KeyPressed& key) {
 	}
 }
 
-void Snake::snakeMove(float deltaTime, std::vector<std::vector<char>>& board) {
+void Snake::snakeMove(float deltaTime, std::vector<std::vector<char>>& board, FoodMenager& foodMenager) {
 	snakeMoveTimer += deltaTime;
 
 	if (snakeMoveTimer >= snakeMaxMoveTime && isAlive) {
@@ -61,8 +62,10 @@ void Snake::snakeMove(float deltaTime, std::vector<std::vector<char>>& board) {
 
 		if (isValidMove(newX, newY, board)) {
 			snakeBlocksCords.insert(snakeBlocksCords.begin(), { newX, newY });
+			foodMenager.removeEmptyLocation(newX, newY);
 
 			if (snakeBlocksCords.size() > snakeLength) {
+				foodMenager.addEmptyLocation(snakeBlocksCords.back()[0], snakeBlocksCords.back()[1]);
 				snakeBlocksCords.pop_back();
 			}
 		}

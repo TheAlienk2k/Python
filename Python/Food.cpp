@@ -8,8 +8,15 @@ BasicFood::BasicFood(int x, int y)
 	coordinates[1] = y;
 	effectDurration = 0.f;
 
-	if (!texture.loadFromFile("Textures/FoodTextures/basicFood.png"))
-		std::cout << "Blad: nie udalo sie wczytac tekstury BasicFood\n";
+	static sf::Texture basicTexture;
+	static bool isLoaded = false;
+
+	if (!isLoaded)
+	{
+		if (!basicTexture.loadFromFile("Textures/FoodTextures/basicFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury BasicFood \n"; }
+		isLoaded = true;
+	}
+	texture = &basicTexture;
 }
 
 void BasicFood::applyEffect(Snake& snake)
@@ -27,8 +34,15 @@ SpicyFood::SpicyFood(int x, int y)
 	coordinates[1] = y;
 	effectDurration = 10.f;
 
-	if (!texture.loadFromFile("Textures/FoodTextures/spicyFood.png"))
-		std::cout << "Blad: nie udalo sie wczytac tekstury SpicyFood\n";
+	static sf::Texture basicTexture;
+	static bool isLoaded = false;
+
+	if (!isLoaded)
+	{
+		if (!basicTexture.loadFromFile("Textures/FoodTextures/spicyFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury spicyFood \n"; }
+		isLoaded = true;
+	}
+	texture = &basicTexture;
 }
 
 void SpicyFood::applyEffect(Snake& snake)

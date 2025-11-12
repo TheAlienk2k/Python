@@ -6,6 +6,7 @@
 #include <queue>
 
 class Food;
+class FoodMenager;
 
 class Snake
 {
@@ -17,7 +18,7 @@ private:
 	bool isAlive = true;
 	int score = 0;
 
-	float snakeMaxMoveTime = 0.30f;
+	float snakeMaxMoveTime = 0.16f;
 	float snakeMoveTimer = 0.0f;
 
 	char currentDirection; //MA£E LITERY!!!! 'w'-góra 's'-dó³ 'a'-lewo 'd'-prawo
@@ -29,7 +30,7 @@ public:
 
 	void snakeDirectionChange(const sf::Event::KeyPressed& key);
 
-	void snakeMove(float deltaTime, std::vector<std::vector<char>>& board);
+	void snakeMove(float deltaTime, std::vector<std::vector<char>>& board, FoodMenager& foodMenager);
 
 	bool isValidMove(int &x, int &y, std::vector<std::vector<char>>& board);
 

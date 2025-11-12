@@ -3,6 +3,8 @@
 #include "SceneMenager.h"
 #include "LevelMenager.h"
 #include "Snake.h"
+#include "FoodMenager.h"
+#include "Food.h"
 
 #include <vector>
 #include <array>
@@ -31,6 +33,7 @@ private:
 
 	vector<vector<char>> board;
 	Snake snake;
+	FoodMenager foodMenager;
 
 public:
 	GameScene(sf::RenderWindow &gameWindow, SceneMenager* menag, LevelMenager& levelMenag)
@@ -38,7 +41,8 @@ public:
 	,levelMenager(levelMenag)
 	,exitButton(buttonsFont)
 	,board(levelMenager.getLevelBoard())
-	,snake(levelMenag.getSnakeCordsAtStart()[0], levelMenag.getSnakeCordsAtStart()[1], levelMenag.getSnakeDirectionAtStart())   //tymczasowa dla testu
+	,snake(levelMenag.getSnakeCordsAtStart()[0], levelMenag.getSnakeCordsAtStart()[1], levelMenag.getSnakeDirectionAtStart())
+	,foodMenager(board)
 	{
 		if (!titleFont.openFromFile("Fonts/blocked.ttf")) {
 			cout << "Blad w ladowaniu czcionki" << "\n";
@@ -88,13 +92,17 @@ public:
 	}
 
 	void update(float deltaTime) override {
-		snake.snakeMove(deltaTime, board);
+		snake.snakeMove(deltaTime, board, foodMenager);
+		if (snake.getStatus()) {
+			foodMenager.foodGenerate(deltaTime);
+		}
 	}
 		
 	void render(sf::RenderWindow& gameWindow) {
 		gameWindow.draw(exitButton);
 		renderCurrentBoardState(gameWindow);
 		snakeRender(gameWindow);
+		foodRender(gameWindow);
 	}
 
 	void renderCurrentBoardState(sf::RenderWindow& gameWindow) {
@@ -135,6 +143,19 @@ public:
 				gameWindow.draw(snakeHead);
 				isHead = false;
 			}
+		}
+	}
+
+	void foodRender(sf::RenderWindow& gameWindow) {
+		std::vector<Food*> foodCords= foodMenager.getFoodCoordinates();
+		for (Food* food : foodCords) {
+			sf::Sprite foodSprite(food->getTexture());
+			foodSprite.setTextureRect(sf::IntRect({ 0,0 }, { 32, 32 }));
+			foodSprite.setOrigin(sf::Vector2f(foodSprite.getGlobalBounds().getCenter().x, foodSprite.getGlobalBounds().getCenter().y));
+			foodSprite.setScale(sf::Vector2f(static_cast<float>(boardBlockSize) / 32.f, static_cast<float>(boardBlockSize) / 32.f));
+			foodSprite.setPosition(sf::Vector2f(boardMarginX + (food->getCoordinates()[0] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize / 2), boardMarginY + (food->getCoordinates()[1] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize / 2)));
+
+			gameWindow.draw(foodSprite);
 		}
 	}
 
