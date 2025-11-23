@@ -41,11 +41,10 @@ void FoodMenager::foodGenerate(float deltaTime) {
 		currentWeightSum += food.weight;
 
 		if (random <= currentWeightSum) {
-			Food* newFood = food.foodFactory();
+			std::unique_ptr<Food> newFood(food.foodFactory());
 			newFood->setCoordinates(x,y);
 			std::cout << "Wygenerowal: " << newFood->getCoordinates()[0] << " " << newFood->getCoordinates()[1] << "\n";
-			foodCoordinates.push_back(newFood);
-
+			foodCoordinates.push_back(std::move(newFood));
 			break;
 		}
 	}
@@ -61,7 +60,7 @@ void FoodMenager::removeEmptyLocation(int x, int y) {
 	emptyLocations.erase(std::remove(emptyLocations.begin(), emptyLocations.end(), std::array<int, 2>{x, y}), emptyLocations.end());
 }
 
-std::vector<Food*> FoodMenager::getFoodCoordinates() const {
+std::vector<std::unique_ptr<Food>>& FoodMenager::getFoodCoordinates(){
 	return foodCoordinates;
 }
 

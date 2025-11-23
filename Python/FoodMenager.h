@@ -11,12 +11,12 @@ class FoodMenager
 private:
 
 	struct FoodType {
-		std::function<Food* ()> foodFactory;
+		std::function<Food*()> foodFactory;
 		int weight;
 	};
 
-	std::vector<Food*> foodCoordinates{};		//jedzenie na mapie
-	std::vector<FoodType> foodTypes{};		//wszystkie rodzaje jedzenia
+	std::vector<std::unique_ptr<Food>> foodCoordinates;		//jedzenie na mapie
+	std::vector<FoodType> foodTypes;		//wszystkie rodzaje jedzenia
 
 	std::vector<std::array<int, 2>> emptyLocations;
 
@@ -34,6 +34,6 @@ public:
 	void foodGenerate(float deltaTime);
 	void addEmptyLocation(int x, int y);
 	void removeEmptyLocation(int x, int y);
-	std::vector<Food*> getFoodCoordinates() const;
+	std::vector<std::unique_ptr<Food>>& getFoodCoordinates();
 };
 

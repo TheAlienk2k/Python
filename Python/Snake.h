@@ -11,14 +11,21 @@ class FoodMenager;
 class Snake
 {
 private:
-	std::vector<std::array<int, 2>> snakeBlocksCords; //[0]-Xcords [1]-Ycords
-	std::vector<Food*> currentEffects {};
+	struct ActiveEffect {
+		std::unique_ptr<Food> food;
+		float remainingTime;
+		bool stackable;
+		int id;
+	};
 
-	int snakeLength = 6;
+	std::vector<std::array<int, 2>> snakeBlocksCords; //[0]-Xcords [1]-Ycords  PRZEROBIÆ KIEDYS NA STRUCT (dla czytelnoœci)
+	std::vector<ActiveEffect> currentEffects;
+
+	int snakeLength = 3;
 	bool isAlive = true;
 	int score = 0;
 
-	float snakeMaxMoveTime = 0.16f;
+	float snakeMaxMoveTime = 0.2f;
 	float snakeMoveTimer = 0.0f;
 
 	char currentDirection; //MA£E LITERY!!!! 'w'-góra 's'-dó³ 'a'-lewo 'd'-prawo
@@ -38,7 +45,11 @@ public:
 
 	bool getStatus();
 
-	void snakeEat(Food& food);
+	void snakeEat(std::unique_ptr<Food> food);
+
+	void updateEffects(float deltaTime);
+
+	std::vector<ActiveEffect>& getEffects();
 
 	void snakeVomit();
 
