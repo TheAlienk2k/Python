@@ -11,6 +11,8 @@ class Food
 protected:
 	const sf::Texture* texture = nullptr;
 	std::array<int, 2> coordinates{};
+
+	int scoreValue;
 	float effectDurration;
 	bool stackable;
 	int id;
@@ -22,6 +24,7 @@ public:
 	float getEffectDurration() { return effectDurration; }
 	bool isStackable() { return stackable; }
 	int getId() { return id; }
+	int getScoreValue() { return scoreValue; }
 	std::array<int, 2> getCoordinates() { return coordinates; }
 	const sf::Texture& getTexture() const { return *texture; }
 	void setCoordinates(int x, int y) { coordinates[0] = x; coordinates[1] = y; }
@@ -43,7 +46,7 @@ public:
 class SpicyFood : public Food
 {
 public:
-	static inline int rngWeight = 30;
+	static inline int rngWeight = 10;
 
 	SpicyFood(int x = 0, int y = 0);
 	void applyEffect(Snake& snake) override;

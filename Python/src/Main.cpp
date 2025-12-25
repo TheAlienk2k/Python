@@ -1,10 +1,10 @@
 #include <iostream> 
 #include <SFML/Graphics.hpp>
 
-#include "Scene.h"
-#include "LevelMenager.h"
-#include "MainMenuScene.h"
-#include "SceneMenager.h"
+#include "Scenes/Scene.h"
+#include "Menagers/LevelMenager.h"
+#include "Scenes/MainMenuScene.h"
+#include "Menagers/SceneMenager.h"
 
 using namespace std;
 

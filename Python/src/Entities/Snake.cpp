@@ -1,11 +1,11 @@
-#include "Snake.h"
+#include "Entities/Snake.h"
 
 #include <iostream>
 #include <algorithm>
 #include <utility>
 
-#include "Food.h"
-#include "FoodMenager.h"
+#include "Entities/Food.h"
+#include "Menagers/FoodMenager.h"
 
 Snake::Snake(int x, int y, char direction)
 {
@@ -133,44 +133,60 @@ bool Snake::getStatus() {
 }
 
 void Snake::snakeEat(std::unique_ptr<Food> food) {
+	float duration = food->getEffectDurration();
+	bool stackable = food->isStackable();
+	int id = food->getId();
+
 	snakeLength++;
-	if (food->getEffectDurration() == 0.f) {
+	this->addScore(food.get()->getScoreValue());
+
+	if (duration == 0.f) {
 		food->applyEffect(*this);
 		return;
 	}
-	else if(food->getEffectDurration() > 0) {
-		float duration = food->getEffectDurration();
-		bool stackable = food->isStackable();
-		int id = food->getId();
 
-		if (food->isStackable() == false) {
-			for (ActiveEffect& effect : currentEffects) {
-				if (effect.id == food->getId()) {
-					effect.remainingTime = food->getEffectDurration();
-					return;
+	if (duration > 0.f) {
+
+		if (stackable == false) {
+			if (currentEffects.count(id)) {
+				if (!currentEffects.at(id).empty()) {
+					currentEffects.at(id).begin()->remainingTime = duration;
+					return; 
 				}
 			}
 		}
-		
+
 		food->applyEffect(*this);
-		currentEffects.push_back({ std::move(food), duration, stackable, id });
+		currentEffects[id].emplace_back(ActiveEffect{ std::move(food), duration, stackable});
 	}
 }
 
 void Snake::updateEffects(float deltaTime) {
 	if (!isAlive) { return; }
 
-	for (int i = currentEffects.size() - 1; i >= 0; i--) {
-		currentEffects[i].remainingTime -= deltaTime;
 
-		if (currentEffects[i].remainingTime <= 0) {
-			currentEffects[i].food->expireEffect(*this);
-			currentEffects.erase(currentEffects.begin() + i);;
+	for (auto it = currentEffects.begin(); it != currentEffects.end(); ) {
+		std::vector<ActiveEffect>& effects = it->second;
+
+		for (int i = effects.size() - 1; i >= 0; --i) {
+			effects[i].remainingTime -= deltaTime;
+
+			if (effects[i].remainingTime <= 0) {
+				effects[i].food->expireEffect(*this);
+				effects.erase(effects.begin() + i);
+			}
+		}
+
+		if (effects.empty()) {
+			it = currentEffects.erase(it);
+		}
+		else {
+			it++;
 		}
 	}
 }
 
-std::vector<Snake::ActiveEffect>& Snake::getEffects() {
+std::unordered_map<int, std::vector<ActiveEffect>>& Snake::getEffects() {
 	return currentEffects;
 }
 

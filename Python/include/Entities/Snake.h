@@ -8,18 +8,17 @@
 class Food;
 class FoodMenager;
 
+struct ActiveEffect {
+	std::unique_ptr<Food> food;
+	float remainingTime;
+	bool stackable;
+};
+
 class Snake
 {
 private:
-	struct ActiveEffect {
-		std::unique_ptr<Food> food;
-		float remainingTime;
-		bool stackable;
-		int id;
-	};
-
 	std::vector<std::array<int, 2>> snakeBlocksCords; //[0]-Xcords [1]-Ycords  PRZEROBIÆ KIEDYS NA STRUCT (dla czytelnoœci)
-	std::vector<ActiveEffect> currentEffects;
+	std::unordered_map<int, std::vector<ActiveEffect>> currentEffects;
 
 	int snakeLength = 3;
 	bool isAlive = true;
@@ -29,7 +28,7 @@ private:
 	float snakeMoveTimer = 0.0f;
 
 	char currentDirection; //MA£E LITERY!!!! 'w'-góra 's'-dó³ 'a'-lewo 'd'-prawo
-	const int inputQueueMaxSize = 2;
+	const int inputQueueMaxSize = 1;
 	std::queue<char> inputQueue;
 
 public:
@@ -49,7 +48,7 @@ public:
 
 	void updateEffects(float deltaTime);
 
-	std::vector<ActiveEffect>& getEffects();
+	std::unordered_map<int, std::vector<ActiveEffect>>& getEffects();
 
 	void snakeVomit();
 

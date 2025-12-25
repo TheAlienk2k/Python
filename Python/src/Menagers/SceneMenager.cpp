@@ -1,7 +1,7 @@
-#include "SceneMenager.h"
-#include "MainMenuScene.h"
-#include "LevelSelectScene.h"
-#include "GameScene.h"
+#include "Menagers/SceneMenager.h"
+#include "Scenes/MainMenuScene.h"
+#include "Scenes/LevelSelectScene.h"
+#include "Scenes/GameScene.h"
 
 SceneMenager::SceneMenager(sf::RenderWindow& window, LevelMenager& levelMenager)
     :gameWindow(window)

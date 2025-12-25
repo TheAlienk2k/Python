@@ -1,5 +1,5 @@
-#include "Food.h"
-#include "Snake.h"
+#include "Entities/Food.h"
+#include "Entities/Snake.h"
 #include <iostream>
 
 BasicFood::BasicFood(int x, int y)
@@ -7,6 +7,7 @@ BasicFood::BasicFood(int x, int y)
 	coordinates[0] = x;
 	coordinates[1] = y;
 
+	scoreValue = 1;
 	effectDurration = 0.f;
 	stackable = false;
 	id = 1;
@@ -25,7 +26,6 @@ BasicFood::BasicFood(int x, int y)
 
 void BasicFood::applyEffect(Snake& snake)
 {
-	snake.addScore(1);
 }
 
 void BasicFood::expireEffect(Snake& snake)
@@ -39,9 +39,10 @@ SpicyFood::SpicyFood(int x, int y)
 {
 	coordinates[0] = x;
 	coordinates[1] = y;
-
+	
+	scoreValue = 3;
 	effectDurration = 10.f;
-	stackable = false;              //Zmieniæ jak skoñcze testowaæ renderowanie timera effectów
+	stackable = true;
 	id = 2;
 
 	static sf::Texture basicTexture;
@@ -57,12 +58,11 @@ SpicyFood::SpicyFood(int x, int y)
 }
 
 void SpicyFood::applyEffect(Snake& snake)
-{
-	snake.addScore(3);                                              //Bug score sie nie dodaje dla niestackowalnego jedzenia trzeba rzdzieliæ logike efektów i wyniku ;(
-	snake.setMaxMoveTime(snake.getMaxMoveTime() - 0.01f);
+{                                             
+	snake.setMaxMoveTime(snake.getMaxMoveTime() - 0.02f);
 }
 
 void SpicyFood::expireEffect(Snake& snake)
 {
-	snake.setMaxMoveTime(snake.getMaxMoveTime() + 0.01f);
+	snake.setMaxMoveTime(snake.getMaxMoveTime() + 0.02f);
 }

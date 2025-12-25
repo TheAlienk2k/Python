@@ -1,7 +1,7 @@
 #pragma once
-#include "Scene.h"
-#include "SceneMenager.h"
-#include "LevelMenager.h"
+#include "Scenes/Scene.h"
+#include "Menagers/SceneMenager.h"
+#include "Menagers/LevelMenager.h"
 
 #include <vector>
 #include <filesystem>
@@ -25,7 +25,8 @@ private:
 	sf::Text previousLevelBtn;
 	sf::Text selectedLevelText;
 	sf::Text backBtn;
-
+	sf::Text addLevelBtn;
+	sf::Text removeLevelBtn;
 
 public:
 	LevelSelectScene(sf::RenderWindow& gameWindow, SceneMenager* menag, LevelMenager& levelMenager)
@@ -37,6 +38,8 @@ public:
 		,previousLevelBtn(buttonsFont)
 		,selectedLevelText(buttonsFont)
 		,backBtn(buttonsFont)
+		,addLevelBtn(buttonsFont)
+		,removeLevelBtn(buttonsFont)
 	{
 
 		if (!titleFont.openFromFile("Fonts/blocked.ttf")) {
@@ -72,15 +75,27 @@ public:
 
 		backBtn.setFont(buttonsFont);
 		backBtn.setString("<BACK");
-		backBtn.setCharacterSize(100);
+		backBtn.setCharacterSize(80);
 		backBtn.setFillColor(sf::Color::White);
-		backBtn.setPosition(sf::Vector2f(30.0, 650.0));
+		backBtn.setPosition(sf::Vector2f(30.0, (gameWindow.getSize().y - backBtn.getLocalBounds().size.y - backBtn.getLocalBounds().position.y - 20)));
 
 		playBtn.setFont(buttonsFont);
 		playBtn.setString("PLAY");
 		playBtn.setCharacterSize(100);
 		playBtn.setFillColor(sf::Color::White);
 		playBtn.setPosition(sf::Vector2f((gameWindow.getSize().x - playBtn.getLocalBounds().size.x) / 2, 380.0));
+
+		addLevelBtn.setFont(buttonsFont);
+		addLevelBtn.setString("ADD>");
+		addLevelBtn.setCharacterSize(80);
+		addLevelBtn.setFillColor(sf::Color::White);
+		addLevelBtn.setPosition(sf::Vector2f( (gameWindow.getSize().x - addLevelBtn.getLocalBounds().size.x - -addLevelBtn.getLocalBounds().position.x - 30), (gameWindow.getSize().y - addLevelBtn.getLocalBounds().size.y - addLevelBtn.getLocalBounds().position.y - 70 ) ));
+
+		removeLevelBtn.setFont(buttonsFont);
+		removeLevelBtn.setString("REMOVE>");
+		removeLevelBtn.setCharacterSize(80);
+		removeLevelBtn.setFillColor(sf::Color::White);
+		removeLevelBtn.setPosition(sf::Vector2f( (gameWindow.getSize().x - removeLevelBtn.getLocalBounds().size.x - removeLevelBtn.getLocalBounds().position.x - 30), (gameWindow.getSize().y - removeLevelBtn.getLocalBounds().size.y - removeLevelBtn.getLocalBounds().position.y - 20)) );
 
 	}
 
@@ -131,6 +146,11 @@ public:
 			else if (playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
 				sceneMenager->loadGameScene();
 			}
+			else if (removeLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+				levelMenager.removeCurrentLevel();
+				selectedLevelText.setString(levelMenager.getCurrentLevelName());
+				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
+			}
 		}
 	}
 
@@ -143,6 +163,8 @@ public:
 		gameWindow.draw(selectedLevelText);
 		gameWindow.draw(backBtn);
 		gameWindow.draw(playBtn);
+		gameWindow.draw(addLevelBtn);
+		gameWindow.draw(removeLevelBtn);
 	}
 };
 

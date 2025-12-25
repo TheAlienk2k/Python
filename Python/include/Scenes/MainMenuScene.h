@@ -1,6 +1,6 @@
 #pragma once
-#include "Scene.h"
-#include "SceneMenager.h"
+#include "Scenes/Scene.h"
+#include "Menagers/SceneMenager.h"
 
 using namespace std;
 

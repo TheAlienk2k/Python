@@ -103,7 +103,9 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalHeaderUnitDependencies>
+      </AdditionalHeaderUnitDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,7 +127,9 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalHeaderUnitDependencies>
+      </AdditionalHeaderUnitDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,16 +143,16 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Food.cpp" />
-    <ClCompile Include="FoodMenager.cpp" />
-    <ClCompile Include="GameScene.cpp" />
-    <ClCompile Include="LevelMenager.cpp" />
-    <ClCompile Include="LevelSelectScene.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MainMenuScene.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneMenager.cpp" />
-    <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="src\Entities\Food.cpp" />
+    <ClCompile Include="src\Menagers\FoodMenager.cpp" />
+    <ClCompile Include="src\Scenes\GameScene.cpp" />
+    <ClCompile Include="src\Menagers\LevelMenager.cpp" />
+    <ClCompile Include="src\Scenes\LevelSelectScene.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Scenes\MainMenuScene.cpp" />
+    <ClCompile Include="src\Scenes\Scene.cpp" />
+    <ClCompile Include="src\Menagers\SceneMenager.cpp" />
+    <ClCompile Include="src\Entities\Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Fonts\arial.ttf" />
@@ -156,15 +160,15 @@
     <Font Include="Fonts\blocks.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Food.h" />
-    <ClInclude Include="FoodMenager.h" />
-    <ClInclude Include="GameScene.h" />
-    <ClInclude Include="LevelMenager.h" />
-    <ClInclude Include="LevelSelectScene.h" />
-    <ClInclude Include="MainMenuScene.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneMenager.h" />
-    <ClInclude Include="Snake.h" />
+    <ClInclude Include="include\Entities\Food.h" />
+    <ClInclude Include="include\Menagers\FoodMenager.h" />
+    <ClInclude Include="include\Scenes\GameScene.h" />
+    <ClInclude Include="include\Menagers\LevelMenager.h" />
+    <ClInclude Include="include\Scenes\LevelSelectScene.h" />
+    <ClInclude Include="include\Scenes\MainMenuScene.h" />
+    <ClInclude Include="include\Scenes\Scene.h" />
+    <ClInclude Include="include\Menagers\SceneMenager.h" />
+    <ClInclude Include="include\Entities\Snake.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Levels\dhdsfgh.txt">
@@ -176,11 +180,6 @@
     <Text Include="Levels\Level dsads.txt">
       <DeploymentContent>true</DeploymentContent>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Levels\dsds.pdf">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

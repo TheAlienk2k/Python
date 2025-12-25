@@ -22,6 +22,7 @@ public:
     string getCurrentLevelName();
     void nextLevel();
     void previousLevel();
+    void removeCurrentLevel();
     char getSnakeDirectionAtStart();
     array<int, 2> getSnakeCordsAtStart();
     vector<vector<char>> getLevelBoard();

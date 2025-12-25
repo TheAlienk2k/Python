@@ -15,34 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="src\Main.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
+    <ClCompile Include="src\Scenes\Scene.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="MainMenuScene.cpp">
+    <ClCompile Include="src\Scenes\MainMenuScene.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="SceneMenager.cpp">
+    <ClCompile Include="src\Menagers\SceneMenager.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="LevelSelectScene.cpp">
+    <ClCompile Include="src\Scenes\LevelSelectScene.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="LevelMenager.cpp">
+    <ClCompile Include="src\Menagers\LevelMenager.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="GameScene.cpp">
+    <ClCompile Include="src\Scenes\GameScene.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Snake.cpp">
+    <ClCompile Include="src\Entities\Snake.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Food.cpp">
+    <ClCompile Include="src\Entities\Food.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="FoodMenager.cpp">
+    <ClCompile Include="src\Menagers\FoodMenager.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
@@ -52,31 +52,31 @@
     <Font Include="Fonts\arial.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scene.h">
+    <ClInclude Include="include\Scenes\Scene.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenuScene.h">
+    <ClInclude Include="include\Scenes\MainMenuScene.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="SceneMenager.h">
+    <ClInclude Include="include\Menagers\SceneMenager.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="LevelSelectScene.h">
+    <ClInclude Include="include\Scenes\LevelSelectScene.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="LevelMenager.h">
+    <ClInclude Include="include\Menagers\LevelMenager.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="GameScene.h">
+    <ClInclude Include="include\Scenes\GameScene.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Snake.h">
+    <ClInclude Include="include\Entities\Snake.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Food.h">
+    <ClInclude Include="include\Entities\Food.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="FoodMenager.h">
+    <ClInclude Include="include\Menagers\FoodMenager.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
@@ -84,9 +84,6 @@
     <Text Include="Levels\dhdsfgh.txt" />
     <Text Include="Levels\gdfhgfahgshdaah.txt" />
     <Text Include="Levels\Level dsads.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Levels\dsds.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\SnakeTextures\Face.png">

@@ -1,4 +1,4 @@
-#include "LevelMenager.h"
+#include "Menagers/LevelMenager.h"
 
 LevelMenager::LevelMenager(const string fName) : folderName(fName), currentLevel(0) {
     for (const auto& file : filesystem::directory_iterator(folderName)) {
@@ -109,4 +109,12 @@ vector<vector<char>> LevelMenager::updateBoard() {
 
 vector<vector<char>> LevelMenager::getLevelBoard() {
     return currentLevelBoard;
+}
+
+void LevelMenager::removeCurrentLevel() {
+    if( std::filesystem::remove( folderName + "/" + levelNames.at(currentLevel) + ".txt")) {
+        if (levelNames.empty() == false) {
+            levelNames.erase(levelNames.begin() + currentLevel);
+        }
+    }
 }

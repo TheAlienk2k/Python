@@ -1,15 +1,15 @@
-#include "FoodMenager.h"
+#include "Menagers/FoodMenager.h"
 #include <random>
 #include <vector>
 #include <array>
 
-#include "Food.h"
+#include "Entities/Food.h"
 
 FoodMenager::FoodMenager(std::vector<std::vector<char>> board)
 	: randGen(randDevice()) 
 {
-	foodTypes.push_back({ []() {return new BasicFood(); }, BasicFood::rngWeight });
-	foodTypes.push_back({ []() {return new SpicyFood(); }, SpicyFood::rngWeight });
+	foodTypes.push_back({ []() {return new BasicFood(); }, BasicFood::rngWeight});
+	foodTypes.push_back({ []() {return new SpicyFood(); }, SpicyFood::rngWeight});
 
 	for (FoodType& type : foodTypes) {
 		weightSum += type.weight;
@@ -27,6 +27,7 @@ void FoodMenager::foodGenerate(float deltaTime) {
 
 	if (foodGenerationTimer < foodMaxGenerationTime || emptyLocations.empty()) { return; }
 
+	std::cout << "Sumaaaaaaaaaaaaaaaaaaaaaaaaaaaa: " << weightSum << "\n";
 	std::uniform_int_distribution<> dist(1, weightSum);
 	int random = dist(randGen);
 
