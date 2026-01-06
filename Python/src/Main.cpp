@@ -16,6 +16,10 @@ int main()
     const float maxFps = 60.0f;
     const sf::Time frameTime = sf::seconds(1.0f / maxFps);
 
+    //licznik klatek dla konsoli
+    sf::Time fpsTimer = sf::Time::Zero;
+    int frameCount = 0;
+
     sf::Clock gameClock;
     sf::Time frameAccumulator = sf::Time::Zero;
 
@@ -23,7 +27,6 @@ int main()
     sceneMenager.loadMainMenu();
 
     bool stateChanged = true;
-
 
     while (gameWindow.isOpen())
     {
@@ -36,16 +39,23 @@ int main()
 
             if (event.has_value()) {
                 sceneMenager.currentScene->eventHandler(event.value(), gameWindow);
-                stateChanged == true;
+                stateChanged = true;
             }
         }
 
         sf::Time deltaTime = gameClock.restart();
         frameAccumulator += deltaTime;
+        fpsTimer += deltaTime;
         while (frameAccumulator >= frameTime) {
             sceneMenager.currentScene->update(frameTime.asSeconds());
-            stateChanged == true;
+            stateChanged = true;
             frameAccumulator -= frameTime;
+        }
+
+        if (fpsTimer >= sf::seconds(1.0f)) {
+            std::cout << "FPS: " << frameCount << std::endl;
+            frameCount = 0;
+            fpsTimer = sf::Time::Zero;
         }
 
         if (stateChanged == true) {                        //Trzeba bedzie to zmeiniæ gdy w przysz³oœci zostan¹ dodane jakieœ animacje np do textury snake
@@ -53,7 +63,8 @@ int main()
             sceneMenager.currentScene->render(gameWindow);
             gameWindow.display();
 
-            stateChanged == false;
+            frameCount++;
+            stateChanged = false;
         }
 
     }

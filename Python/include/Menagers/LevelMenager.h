@@ -1,29 +1,57 @@
 #pragma once
+#ifndef WIN32_LEAN_AND_MEAN
+#endif
+//File selectors - Only Windows
+#define byte win_byte
+#include <windows.h>
+#include <shobjidl.h>
+#undef byte
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 #include <iostream>
-#include <vector>
 #include <filesystem>
+#include <stdexcept>
 #include <fstream>
 #include <string>
 #include <array>
-
-using namespace std;
+#include <vector>
 
 class LevelMenager {
 private:
-    vector<vector<char>> currentLevelBoard;
-    vector<string> levelNames;
-    const string folderName;
+	const int minBoardSize = 5;
+	const int maxBoardSize = 40;
+
+    struct FileData {
+        std::string name;
+        std::filesystem::file_time_type time;
+    };
+
+    std::vector<std::vector<char>> currentLevelBoard;
+    std::vector<FileData> levelsDataVector;
+    const std::string folderName;
     int currentLevel = 0;
 
-    vector<vector<char>> updateBoard();
+    std::vector<std::vector<char>> updateBoard();
+    void updateCurrentLevelNamesList();
+    bool isLevelValid(std::filesystem::path levelPath);
+    std::filesystem::path windowsFileSelection(HWND owner = NULL);
 
 public:
-    LevelMenager(const string fName = "Levels");
-    string getCurrentLevelName();
+    LevelMenager(const std::string fName = "Levels");
+    std::string getCurrentLevelName();
+    bool isLevelListEmpty();
+
     void nextLevel();
     void previousLevel();
     void removeCurrentLevel();
+    void addNewLevel();
+
+	void saveScoreToJson(int score);
+	int getBestScoreFromJson();
+
     char getSnakeDirectionAtStart();
-    array<int, 2> getSnakeCordsAtStart();
-    vector<vector<char>> getLevelBoard();
+    std::array<int, 2> getSnakeCordsAtStart();
+    std::vector<std::vector<char>> getLevelBoard();
 };

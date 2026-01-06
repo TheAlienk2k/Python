@@ -100,10 +100,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)lib;D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalHeaderUnitDependencies>
       </AdditionalHeaderUnitDependencies>
     </ClCompile>
@@ -111,7 +111,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-window-d.lib;sfml-graphics-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;windowscodecs.lib;gdi32.lib;ole32.lib;uuid.lib;comdlg32.lib;winmm.lib
+;
+advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -124,10 +126,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)lib;D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalHeaderUnitDependencies>
       </AdditionalHeaderUnitDependencies>
     </ClCompile>
@@ -135,7 +137,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-window.lib;sfml-graphics.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;windowscodecs.lib;gdi32.lib;ole32.lib;uuid.lib;comdlg32.lib;winmm.lib
+;
+advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -169,6 +173,52 @@
     <ClInclude Include="include\Scenes\Scene.h" />
     <ClInclude Include="include\Menagers\SceneMenager.h" />
     <ClInclude Include="include\Entities\Snake.h" />
+    <ClInclude Include="lib\nlohmann\adl_serializer.hpp" />
+    <ClInclude Include="lib\nlohmann\byte_container_with_subtype.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\abi_macros.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\conversions\from_json.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\conversions\to_chars.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\conversions\to_json.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\exceptions.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\hash.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\input\binary_reader.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\input\input_adapters.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\input\json_sax.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\input\lexer.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\input\parser.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\input\position_t.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\iterators\internal_iterator.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\iterators\iteration_proxy.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\iterators\iterator_traits.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\iterators\iter_impl.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\iterators\json_reverse_iterator.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\iterators\primitive_iterator.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\json_custom_base_class.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\json_pointer.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\json_ref.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\macro_scope.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\macro_unscope.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\meta\call_std\begin.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\meta\call_std\end.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\meta\cpp_future.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\meta\detected.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\meta\identity_tag.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\meta\is_sax.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\meta\std_fs.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\meta\type_traits.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\meta\void_t.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\output\binary_writer.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\output\output_adapters.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\output\serializer.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\string_concat.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\string_escape.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\string_utils.hpp" />
+    <ClInclude Include="lib\nlohmann\detail\value_t.hpp" />
+    <ClInclude Include="lib\nlohmann\json.hpp" />
+    <ClInclude Include="lib\nlohmann\json_fwd.hpp" />
+    <ClInclude Include="lib\nlohmann\ordered_map.hpp" />
+    <ClInclude Include="lib\nlohmann\thirdparty\hedley\hedley.hpp" />
+    <ClInclude Include="lib\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Levels\dhdsfgh.txt">

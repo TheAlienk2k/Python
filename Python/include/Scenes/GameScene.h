@@ -53,6 +53,7 @@ private:
 	const int effectMarginY = 50;
 	const int effectBlockMargin = 4;
 
+	bool isScoreSaved = false;
 	bool isPaused = false;
 	vector<vector<char>> board;
 	Snake snake;
@@ -222,6 +223,12 @@ public:
 
 			if (snake.getStatus() == true) {
 				foodMenager.foodGenerate(deltaTime);
+			}
+			else {
+				if (isScoreSaved == false) {
+					levelMenager.saveScoreToJson(snake.getScore());
+					isScoreSaved = true;
+				}
 			}
 		}
 

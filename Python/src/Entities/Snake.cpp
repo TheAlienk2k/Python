@@ -53,7 +53,6 @@ void Snake::snakeMove(float deltaTime, std::vector<std::vector<char>>& board, Fo
 
 		int snakeHeadX = snakeBlocksCords.at(0)[0];
 		int snakeHeadY = snakeBlocksCords.at(0)[1];
-		std::cout << "kierunek w snaku " << currentDirection << "\n";
 
 		std::array<int, 2> directionChange;
 

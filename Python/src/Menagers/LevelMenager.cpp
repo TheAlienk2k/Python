@@ -1,26 +1,122 @@
 #include "Menagers/LevelMenager.h"
 
-LevelMenager::LevelMenager(const string fName) : folderName(fName), currentLevel(0) {
-    for (const auto& file : filesystem::directory_iterator(folderName)) {
-
-        if (file.path().extension() == ".txt") {
-            string fullFilePath = file.path().string();
-            string fileName = fullFilePath.substr(fullFilePath.find_last_of("\\") + 1);
-
-            levelNames.push_back(fileName.substr(0, fileName.find_last_of(".")));
-        }
-
-    }
-
-    currentLevelBoard = updateBoard();
+LevelMenager::LevelMenager(const std::string fName) : folderName(fName), currentLevel(0) {
+    updateCurrentLevelNamesList();
 }
 
-string LevelMenager::getCurrentLevelName() {
-    return levelNames[currentLevel];
+std::string LevelMenager::getCurrentLevelName() {
+    if (levelsDataVector.empty()) {
+        return "";
+    }
+
+    return levelsDataVector[currentLevel].name;
+}
+
+void LevelMenager::updateCurrentLevelNamesList() {
+    std::vector<FileData> newFiles;
+
+    for (const auto& file : std::filesystem::directory_iterator(folderName)) {
+        if (file.is_regular_file() && file.path().extension() == ".txt") {
+            std::string fileName = file.path().stem().string();
+            auto fileTime = std::filesystem::last_write_time(file);
+
+            bool alreadyExists = false;
+            for (const auto& level : levelsDataVector) {
+                if (level.name == fileName) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+
+            if (!alreadyExists) {
+                newFiles.push_back({ fileName, fileTime });
+            }
+        }
+    }
+
+    if (!newFiles.empty()) {
+        std::sort(newFiles.begin(), newFiles.end(), [](const FileData& a, const FileData& b) {
+            if (a.time != b.time) return a.time < b.time;
+            return a.name < b.name;
+            });
+
+        for (const auto& file : newFiles) {
+            levelsDataVector.push_back(file);
+        }
+
+        currentLevelBoard = updateBoard();
+    }
+}
+
+bool LevelMenager::isLevelValid(std::filesystem::path levelPath) {
+    std::ifstream file(levelPath);
+    if (!file.is_open()) { throw std::runtime_error("Nie udalo sie otworzyc \npliku poziomu"); }
+
+    std::string prev;
+    std::string curr;
+    std::string next;
+
+    int longestRowSize = 0;
+    bool endOfFile = false;
+
+    if (!std::getline(file, curr)) { throw std::runtime_error("Plik poziomu jest pusty."); }
+    longestRowSize = curr.size();
+
+    while (!endOfFile) {
+        if (!std::getline(file, next)) {
+            next = "";
+            endOfFile = true;
+        }
+        else {
+            if (next.size() > longestRowSize) longestRowSize = next.size();
+        }
+
+        for (int x = 0; x < curr.size(); ++x) {
+            char currC = curr[x];
+
+            if (!strchr(" #dDsS", currC)) { throw std::runtime_error("Poziom zawiera niedozwolony \nznak: " + std::string(1, currC)); }
+
+            char c = std::tolower(static_cast<unsigned char>(currC));
+            if (c == 's') {
+                bool foundD = false;
+
+                if (x > 0 && std::tolower(static_cast<unsigned char>(curr[x - 1])) == 'd') foundD = true;
+                if (!foundD && x < curr.size() - 1 && std::tolower(static_cast<unsigned char>(curr[x + 1])) == 'd') foundD = true;
+
+                if (!foundD && !prev.empty() && x < prev.size()) {
+                    if (std::tolower(static_cast<unsigned char>(prev[x])) == 'd') foundD = true;
+                }
+
+                if (!foundD && !next.empty() && x < next.size()) {
+                    if (std::tolower(static_cast<unsigned char>(next[x])) == 'd') foundD = true;
+                }
+
+                if (!foundD) { throw std::runtime_error("Waz (S) musi sasiadowac z \nkierunkiem startowym (D)!"); }
+            }
+        }
+
+        prev = curr;
+        curr = next;
+    }
+
+    if (longestRowSize < minBoardSize || longestRowSize > maxBoardSize) { throw std::runtime_error("Mapa musi miec szerokosc i \ndlugosc w przedziale od 5 do 40"); }
+
+    return true;
+}
+
+bool LevelMenager::isLevelListEmpty() {
+    if (levelsDataVector.empty()) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 void LevelMenager::nextLevel() {
-    if (currentLevel == levelNames.size() - 1) {
+    if (levelsDataVector.empty()) { return; }
+
+    if (currentLevel == levelsDataVector.size() - 1) {
         currentLevel = 0;
     }
     else {
@@ -31,8 +127,10 @@ void LevelMenager::nextLevel() {
 }
 
 void LevelMenager::previousLevel() {
+    if (levelsDataVector.empty()) { return; }
+
     if (currentLevel == 0) {
-        currentLevel = levelNames.size() - 1;
+        currentLevel = levelsDataVector.size() - 1;
     }
     else {
         currentLevel--;
@@ -60,36 +158,36 @@ char LevelMenager::getSnakeDirectionAtStart() {
             }
         }
     }
-
-    cout << "To nic" << "\n";
     return 'd';
 }
 
-array<int, 2> LevelMenager::getSnakeCordsAtStart() {
+std::array<int, 2> LevelMenager::getSnakeCordsAtStart() {
     for (int y = 0; y < currentLevelBoard.size(); y++) {
         for (int x = 0; x < currentLevelBoard[y].size(); x++) {
             if (currentLevelBoard[y][x] == 'S' || currentLevelBoard[y][x] == 's') {
-                return array<int, 2>{x, y};
+                return std::array<int, 2>{x, y};
             }
         }
     }
 
-    return array<int, 2>{0, 0};
+    return std::array<int, 2>{0, 0};
 }
 
-vector<vector<char>> LevelMenager::updateBoard() {
-    vector<vector<char>> board;
-    string fName = levelNames[currentLevel];
-    cout << "otwarto: " << folderName + "\\" + fName + ".txt" << "\n";
+std::vector<std::vector<char>> LevelMenager::updateBoard() {
+    std::vector<std::vector<char>> board;
+    std::string fName = levelsDataVector[currentLevel].name;
 
-    ifstream file(folderName + "\\" + fName + ".txt");
-    if (!file.is_open()) {
-        cout << "Blad przy otwarciu pliku: " << fName << ".txt" << endl;
+    std::ifstream file(folderName + "\\" + fName + ".txt");
+    if (file.is_open()) {
+        std::cout << "otwarto: " << folderName + "\\" + fName + ".txt" << "\n";
+    }
+    else {
+        std::cout << "Blad przy otwarciu pliku: " << fName << ".txt" << "\n";
     }
 
-    string currentLine = "";
+    std::string currentLine = "";
     while (getline(file, currentLine)) {
-        vector<char> row;
+        std::vector<char> row;
         for (char c : currentLine) {
             row.push_back(c);
         }
@@ -98,23 +196,153 @@ vector<vector<char>> LevelMenager::updateBoard() {
 
     for (int i = 0; i < board.size(); i++) {
         for (int j = 0; j < board[i].size(); j++) {
-            cout << board[i][j] << " ";
+            std::cout << board[i][j];
         }
-        cout << "\n";
+        std::cout << "\n";
     }
 
     file.close();
     return board;
 }
 
-vector<vector<char>> LevelMenager::getLevelBoard() {
+std::vector<std::vector<char>> LevelMenager::getLevelBoard() {
     return currentLevelBoard;
 }
 
 void LevelMenager::removeCurrentLevel() {
-    if( std::filesystem::remove( folderName + "/" + levelNames.at(currentLevel) + ".txt")) {
-        if (levelNames.empty() == false) {
-            levelNames.erase(levelNames.begin() + currentLevel);
+    if (levelsDataVector.empty()) { return; }
+
+    try {
+        if ( std::filesystem::remove(std::filesystem::path(folderName) / (levelsDataVector.at(currentLevel).name + ".txt")) ) {
+            std::string scoresPath = "SavedData\\BestScores.json";
+            json scoresData;
+            std::ifstream inFile(scoresPath);
+            inFile >> scoresData;
+
+			scoresData.erase(levelsDataVector.at(currentLevel).name + ".txt");
+            std::ofstream outFile(scoresPath);
+            outFile << scoresData.dump(3);
+
+            levelsDataVector.erase(levelsDataVector.begin() + currentLevel);
+
+            std::cout << "Level zostal usuniety!" << std::endl;
+
+            if (levelsDataVector.empty()) {
+                currentLevel = 0;
+            }
+            else if (currentLevel >= levelsDataVector.size()) {
+                currentLevel = levelsDataVector.size() - 1;
+            }
+
         }
     }
+    catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Blad podczas usuwania pliku: " << e.what() << std::endl;
+    }
+}
+
+void LevelMenager::addNewLevel() {
+    std::filesystem::path filePath = windowsFileSelection();
+
+    if (!filePath.empty()) {
+        try {
+            if(isLevelValid(filePath)) {
+                std::filesystem::path destination = "Levels" / filePath.filename();
+                std::filesystem::copy_file(filePath, destination, std::filesystem::copy_options::overwrite_existing);
+
+                std::string scoresPath = "SavedData\\BestScores.json";
+                json scoresData;
+
+                if (std::filesystem::file_size(scoresPath) > 0) {
+                    std::ifstream inFile(scoresPath);
+                    inFile >> scoresData;
+                }
+                else {
+                    scoresData = json::object();
+                }
+
+                std::string levelName = filePath.filename().string();
+                scoresData[levelName] = 0;
+
+                std::ofstream outFile(scoresPath);
+                outFile << scoresData.dump(3);
+
+                std::cout << "Udalo sie skopiowac" << std::endl;
+                updateCurrentLevelNamesList();
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e) {
+            throw std::runtime_error("Nieznany blad systemu plikow");
+        }
+    }
+}
+
+void LevelMenager::saveScoreToJson(int score) {
+    std::string scoresPath = "SavedData\\BestScores.json";
+    json scoresData;
+    std::ifstream inFile(scoresPath);
+    inFile >> scoresData;
+
+    if (score > scoresData[levelsDataVector.at(currentLevel).name + ".txt"]) {
+        scoresData[levelsDataVector.at(currentLevel).name + ".txt"] = score;
+    }
+    std::ofstream outFile(scoresPath);
+    outFile << scoresData.dump(3);
+}
+
+int LevelMenager::getBestScoreFromJson() {
+    std::string scoresPath = "SavedData/BestScores.json";
+    
+    if (levelsDataVector.empty()) { return 0; }
+
+    std::string levelKey = levelsDataVector.at(currentLevel).name + ".txt";
+    std::ifstream inFile(scoresPath);
+    if (!inFile.is_open()) { return 0; }
+
+    nlohmann::json scoresData;
+    inFile >> scoresData;
+    if (scoresData.contains(levelKey)) {
+        return scoresData[levelKey].get<int>();
+    }
+
+    return 0;
+}
+
+    std::filesystem::path LevelMenager::windowsFileSelection(HWND owner) {
+    std::filesystem::path selectedPath = "";
+
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    if (SUCCEEDED(hr)) {
+        IFileOpenDialog* pFileOpen;
+        hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+        if (SUCCEEDED(hr)) {
+            COMDLG_FILTERSPEC rgSpec[] = {
+                { L"Text Files (*.txt)", L"*.txt" }
+            };
+            pFileOpen->SetFileTypes(1, rgSpec);
+            pFileOpen->SetFileTypeIndex(1);
+            hr = pFileOpen->Show(owner);
+
+            if (SUCCEEDED(hr)) {
+                IShellItem* pItem;
+                hr = pFileOpen->GetResult(&pItem);
+
+                if (SUCCEEDED(hr)) {
+                    PWSTR pszFilePath;
+                    hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+                    if (SUCCEEDED(hr)) {
+                        selectedPath = std::filesystem::path(pszFilePath);
+
+                        CoTaskMemFree(pszFilePath);
+                    }
+                    pItem->Release();
+                }
+            }
+            pFileOpen->Release();
+        }
+        CoUninitialize();
+    }
+    return selectedPath;
 }

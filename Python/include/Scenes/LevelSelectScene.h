@@ -15,7 +15,16 @@ private:
 	SceneMenager* sceneMenager;  
 	LevelMenager& levelMenager;
 	int currentLevelIndex = 0;
+	int currentLevelBestScore = 0;
 
+	bool showErrorDialog = false;
+	string errorMessage = "";
+	sf::RectangleShape dialogBackground;
+	sf::RectangleShape errorDialogBox;
+	sf::Text errorText;
+	sf::Text errorDialogExit;
+
+	sf::Text bestScoreText;
 
 	sf::Font titleFont;
 	sf::Font buttonsFont;
@@ -32,6 +41,11 @@ public:
 	LevelSelectScene(sf::RenderWindow& gameWindow, SceneMenager* menag, LevelMenager& levelMenager)
 		:sceneMenager(menag) 
 		,levelMenager(levelMenager)
+		,dialogBackground(sf::Vector2f(gameWindow.getSize().x, gameWindow.getSize().y))
+		,errorDialogBox(sf::Vector2f(650.0, 350.0))
+		,errorText(titleFont)
+		,errorDialogExit(buttonsFont)
+		,bestScoreText(titleFont)
 		,titleText(titleFont)
 		,playBtn(buttonsFont)
 		,nextLevelBtn(buttonsFont)
@@ -49,11 +63,37 @@ public:
 			cout << "Blad w ladowaniu czcionki" << "\n";
 		}
 
+		dialogBackground.setPosition(sf::Vector2f(0, 0));
+		dialogBackground.setFillColor(sf::Color(0, 0, 0, 220));
+
+		errorDialogBox.setPosition(sf::Vector2f( (gameWindow.getSize().x - errorDialogBox.getLocalBounds().size.x)/2 , (gameWindow.getSize().y - errorDialogBox.getLocalBounds().size.y) / 2));
+		errorDialogBox.setFillColor(sf::Color(40, 40, 40));
+		errorDialogBox.setOutlineColor(sf::Color::Red);
+		errorDialogBox.setOutlineThickness(4);
+
+		errorText.setFont(titleFont);
+		errorText.setString("");
+		errorText.setCharacterSize(30);
+		errorText.setFillColor(sf::Color::Red);
+		errorText.setPosition(sf::Vector2f( errorDialogBox.getPosition().x + 15, errorDialogBox.getPosition().y + 30));
+
+		errorDialogExit.setFont(buttonsFont);
+		errorDialogExit.setString("X");
+		errorDialogExit.setCharacterSize(80);
+		errorDialogExit.setFillColor(sf::Color::White);
+		errorDialogExit.setPosition(sf::Vector2f(errorDialogBox.getPosition().x + errorDialogBox.getLocalBounds().size.x - errorDialogExit.getLocalBounds().size.x-15 , errorDialogBox.getPosition().y - 40));
+
 		titleText.setFont(titleFont);
 		titleText.setString("Select Your Level");
 		titleText.setCharacterSize(90);
 		titleText.setFillColor(sf::Color::Green);
 		titleText.setPosition(sf::Vector2f((gameWindow.getSize().x - titleText.getLocalBounds().size.x) / 2, 40.0));
+
+		bestScoreText.setFont(titleFont);
+		bestScoreText.setString("Personal Best: " + std::to_string(levelMenager.getBestScoreFromJson()));
+		bestScoreText.setCharacterSize(45);
+		bestScoreText.setFillColor(sf::Color::Yellow);
+		bestScoreText.setPosition(sf::Vector2f((gameWindow.getSize().x - bestScoreText.getLocalBounds().size.x) / 2, gameWindow.getSize().y-bestScoreText.getGlobalBounds().size.y-25 ));
 
 		nextLevelBtn.setFont(buttonsFont);
 		nextLevelBtn.setString(">");
@@ -103,54 +143,101 @@ public:
 
 		if (event.is<sf::Event::MouseMoved>()) {
 
-			if (backBtn.getFillColor() == sf::Color::White
-				&& backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+			if (showErrorDialog == false) {
+				if (backBtn.getFillColor() == sf::Color::White
+					&& backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
 
-				backBtn.setString("< BACK");
-				backBtn.setFillColor(sf::Color::Green);
-			}
-			else if (backBtn.getFillColor() == sf::Color::Green
-				&& !backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					backBtn.setString("< BACK");
+					backBtn.setFillColor(sf::Color::Red);
+				}
+				else if (backBtn.getFillColor() == sf::Color::Red
+					&& !backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
 
-				backBtn.setString("<BACK");
-				backBtn.setFillColor(sf::Color::White);
-			}
+					backBtn.setString("<BACK");
+					backBtn.setFillColor(sf::Color::White);
+				}
 
-			else if (playBtn.getFillColor() == sf::Color::White
-				&& playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				playBtn.setFillColor(sf::Color::Green);
+				else if (playBtn.getFillColor() == sf::Color::White
+					&& playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					playBtn.setFillColor(sf::Color::Green);
+				}
+				else if (playBtn.getFillColor() == sf::Color::Green
+					&& !playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					playBtn.setFillColor(sf::Color::White);
+				}
 			}
-			else if (playBtn.getFillColor() == sf::Color::Green
-				&& !playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				playBtn.setFillColor(sf::Color::White);
+			else {
+				if (errorDialogExit.getFillColor() == sf::Color::White
+					&& errorDialogExit.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					errorDialogExit.setFillColor(sf::Color::Red);
+				}
+				else if (errorDialogExit.getFillColor() == sf::Color::Red
+					&& !errorDialogExit.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					errorDialogExit.setFillColor(sf::Color::White);
+				}
 			}
 
 		}
 
 
 		if (event.is<sf::Event::MouseButtonPressed>() && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-			
-			if (nextLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				levelMenager.nextLevel();
-				selectedLevelText.setString(levelMenager.getCurrentLevelName());
-				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
+			if (showErrorDialog == false) {
+
+				if (nextLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					levelMenager.nextLevel();
+					selectedLevelText.setString(levelMenager.getCurrentLevelName());
+					bestScoreText.setString("Personal Best: " + std::to_string(levelMenager.getBestScoreFromJson()));
+
+					selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
+					bestScoreText.setPosition(sf::Vector2f((gameWindow.getSize().x - bestScoreText.getLocalBounds().size.x) / 2, bestScoreText.getPosition().y));
+				}
+				else if (previousLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					levelMenager.previousLevel();
+					selectedLevelText.setString(levelMenager.getCurrentLevelName());
+					bestScoreText.setString("Personal Best: " + std::to_string(levelMenager.getBestScoreFromJson()));
+
+					selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
+					bestScoreText.setPosition(sf::Vector2f((gameWindow.getSize().x - bestScoreText.getLocalBounds().size.x) / 2, bestScoreText.getPosition().y));
+				}
+				else if (backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					sceneMenager->loadMainMenu();
+				}
+				else if (playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					if (!levelMenager.isLevelListEmpty()) {
+						sceneMenager->loadGameScene();
+					}
+				}
+				else if (removeLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					levelMenager.removeCurrentLevel();
+					selectedLevelText.setString(levelMenager.getCurrentLevelName());
+					bestScoreText.setString("Personal Best: " + std::to_string(levelMenager.getBestScoreFromJson()));
+
+					selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
+					bestScoreText.setPosition(sf::Vector2f((gameWindow.getSize().x - bestScoreText.getLocalBounds().size.x) / 2, bestScoreText.getPosition().y));
+				}
+				else if (addLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					try {
+						levelMenager.addNewLevel();
+					}
+					catch (const std::exception& e) {
+						showErrorDialog = true;
+						errorMessage = e.what();
+					}
+					selectedLevelText.setString(levelMenager.getCurrentLevelName());
+					bestScoreText.setString("Personal Best: " + std::to_string(levelMenager.getBestScoreFromJson()));
+
+					selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
+					bestScoreText.setPosition(sf::Vector2f((gameWindow.getSize().x - bestScoreText.getLocalBounds().size.x) / 2, bestScoreText.getPosition().y));
+				}
+
 			}
-			else if (previousLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				levelMenager.previousLevel();
-				selectedLevelText.setString(levelMenager.getCurrentLevelName());
-				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
+			else {
+				if (errorDialogExit.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
+					showErrorDialog = false;
+					errorMessage = "";
+				}
 			}
-			else if (backBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				sceneMenager->loadMainMenu();
-			}
-			else if (playBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				sceneMenager->loadGameScene();
-			}
-			else if (removeLevelBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				levelMenager.removeCurrentLevel();
-				selectedLevelText.setString(levelMenager.getCurrentLevelName());
-				selectedLevelText.setPosition(sf::Vector2f((gameWindow.getSize().x - selectedLevelText.getLocalBounds().size.x) / 2, selectedLevelText.getPosition().y));
-			}
+
 		}
 	}
 
@@ -158,6 +245,7 @@ public:
 
 	void render(sf::RenderWindow& gameWindow) override {
 		gameWindow.draw(titleText);
+		gameWindow.draw(bestScoreText);
 		gameWindow.draw(nextLevelBtn);
 		gameWindow.draw(previousLevelBtn);
 		gameWindow.draw(selectedLevelText);
@@ -165,6 +253,18 @@ public:
 		gameWindow.draw(playBtn);
 		gameWindow.draw(addLevelBtn);
 		gameWindow.draw(removeLevelBtn);
+		
+		if(showErrorDialog) {
+			fileErrorDialogRender(gameWindow, errorMessage);
+		}
+	}
+
+	void fileErrorDialogRender(sf::RenderWindow& gameWindow, string errorMessage) {
+		gameWindow.draw(dialogBackground);
+		gameWindow.draw(errorDialogBox);
+		errorText.setString("Blad: \n" + errorMessage);
+		gameWindow.draw(errorText);
+		gameWindow.draw(errorDialogExit);
 	}
 };
 
