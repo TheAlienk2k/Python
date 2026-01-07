@@ -252,4 +252,7 @@
       <Filter>Pliki zasobów</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SavedData\BestScores.json" />
+  </ItemGroup>
 </Project>

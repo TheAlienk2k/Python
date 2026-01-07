@@ -53,7 +53,7 @@ int main()
         }
 
         if (fpsTimer >= sf::seconds(1.0f)) {
-            std::cout << "FPS: " << frameCount << std::endl;
+            //std::cout << "FPS: " << frameCount << std::endl;
             frameCount = 0;
             fpsTimer = sf::Time::Zero;
         }

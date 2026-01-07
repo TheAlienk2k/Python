@@ -24,7 +24,16 @@ private:
 	bool isAlive = true;
 	int score = 0;
 
-	float snakeMaxMoveTime = 0.2f;
+	bool isMovementReversed = false;
+
+	bool isSnakeSliced = false;
+	int stepCounter = 0;
+
+	bool isGodModeActive = false;
+
+	sf::Vector2i lastActualDirection;
+
+	float snakeMaxMoveTime = 0.18f;
 	float snakeMoveTimer = 0.0f;
 
 	char currentDirection; //MA£E LITERY!!!! 'w'-góra 's'-dó³ 'a'-lewo 'd'-prawo
@@ -35,6 +44,8 @@ public:
 	Snake(int x, int y, char direction);
 
 	void snakeDirectionChange(const sf::Event::KeyPressed& key);
+
+	void setCurrentSnakeDirection(char direction);
 
 	void snakeMove(float deltaTime, std::vector<std::vector<char>>& board, FoodMenager& foodMenager);
 
@@ -63,5 +74,15 @@ public:
 	float getMaxMoveTime();
 
 	void setMaxMoveTime(float maxTime);
+
+	void reverseControls(bool isReversed);
+
+	void slicedSnake(bool isSliced);
+
+	sf::Vector2i getLastActualDirection();
+
+	void godMode(bool isActive);
+
+	bool isSnakeInGodMode();
 };
 

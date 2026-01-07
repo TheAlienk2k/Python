@@ -56,13 +56,34 @@ void Snake::snakeMove(float deltaTime, std::vector<std::vector<char>>& board, Fo
 
 		std::array<int, 2> directionChange;
 
-		if(currentDirection == 'w') directionChange = {0, -1};
+		if (currentDirection == 'w') directionChange = { 0, -1 };
 		else if (currentDirection == 's') directionChange = { 0, 1 };
 		else if (currentDirection == 'a') directionChange = { -1, 0 };
 		else if (currentDirection == 'd') directionChange = { 1, 0 };
 
+		if (isMovementReversed) {
+			directionChange[0] *= -1;
+			directionChange[1] *= -1;
+		}
+
+		if (snakeBlocksCords.size() > 1) {
+			int nextX = snakeHeadX + directionChange[0];
+			int nextY = snakeHeadY + directionChange[1];
+
+			if (nextY < 0) nextY = board.size() - 1;
+			else if (nextY >= (int)board.size()) nextY = 0;
+			if (nextX < 0) nextX = board[nextY].size() - 1;
+			else if (nextX >= (int)board[nextY].size()) nextX = 0;
+
+			if (nextX == snakeBlocksCords[1][0] && nextY == snakeBlocksCords[1][1]) {
+				directionChange = { lastActualDirection.x, lastActualDirection.y };
+			}
+		}
+
 		int newX = snakeHeadX + directionChange[0];
 		int newY = snakeHeadY + directionChange[1];
+
+		lastActualDirection = sf::Vector2i(directionChange[0], directionChange[1]);
 
 		if (isValidMove(newX, newY, board)) {
 
@@ -80,6 +101,22 @@ void Snake::snakeMove(float deltaTime, std::vector<std::vector<char>>& board, Fo
 			snakeBlocksCords.insert(snakeBlocksCords.begin(), { newX, newY });
 			foodMenager.removeEmptyLocation(newX, newY);
 
+			if (isSnakeSliced) {
+				stepCounter++;
+
+				if (stepCounter % 2 == 0 && snakeBlocksCords.size() > 1) {
+
+					int oldX = snakeBlocksCords.at(1)[0];
+					int oldY = snakeBlocksCords.at(1)[1];
+
+					if (oldX != -1) {
+						foodMenager.addEmptyLocation(oldX, oldY);
+					}
+
+					snakeBlocksCords.erase(snakeBlocksCords.begin() + 1);
+				}
+			}
+
 			if (snakeBlocksCords.size() > snakeLength) {
 				foodMenager.addEmptyLocation(snakeBlocksCords.back()[0], snakeBlocksCords.back()[1]);
 				snakeBlocksCords.pop_back();
@@ -94,29 +131,29 @@ void Snake::snakeMove(float deltaTime, std::vector<std::vector<char>>& board, Fo
 			inputQueue.pop();
 		}
 
-		snakeMoveTimer = 0.0f;
-	
+		snakeMoveTimer = 0.0f;	
 }
 
-bool Snake::isValidMove(int &x, int &y, std::vector<std::vector<char>> &board) {
+bool Snake::isValidMove(int& x, int& y, std::vector<std::vector<char>>& board) {
+	if (y < 0) {
+		y = board.size() - 1;
+	}
+	else if (y >= (int)board.size()) {
+		y = 0;
+	}
 
 	if (x < 0) {
 		x = board[y].size() - 1;
 	}
-	else if (x > board[y].size()-1) {
+	else if (x >= (int)board[y].size()) {
 		x = 0;
 	}
 
-	if (y < 0) {
-		y = board.size() - 1;
-	}
-	else if (y > board.size() - 1) {
-		y = 0;
-	}
+	if (isGodModeActive) { return true; }
 
-	if (board[y][x] == '#') return false;
+	if (board[y][x] == '#') { return false; }
 
-	auto it = std::find(snakeBlocksCords.begin() + 1, snakeBlocksCords.end(), std::array<int,2>{ x, y });
+	auto it = std::find(snakeBlocksCords.begin() + 1, snakeBlocksCords.end(), std::array<int, 2>{ x, y });
 	return (it == snakeBlocksCords.end());
 }
 
@@ -207,6 +244,12 @@ char Snake::getDirection() {
 	return currentDirection;
 }
 
+void Snake::setCurrentSnakeDirection(char newDir) {
+	if (newDir != 'w' && newDir != 's' && newDir != 'a' && newDir != 'd') { return; }
+
+	this->currentDirection = newDir;
+}
+
 const std::vector<std::array<int, 2>>& Snake::getSnakeCords() const{
 	return snakeBlocksCords;
 }
@@ -217,4 +260,24 @@ float Snake::getMaxMoveTime() {
 
 void Snake::setMaxMoveTime(float maxTime) {
 	snakeMaxMoveTime = maxTime;
+}
+
+void Snake::reverseControls(bool isReversed) {
+	isMovementReversed = isReversed;
+}
+
+void Snake::slicedSnake(bool isSliced) {
+	isSnakeSliced = isSliced;
+}
+
+sf::Vector2i Snake::getLastActualDirection() {
+	return lastActualDirection;
+}
+
+void Snake::godMode(bool isActive) {
+	isGodModeActive = isActive;
+}
+
+bool Snake::isSnakeInGodMode() {
+	return isGodModeActive;
 }

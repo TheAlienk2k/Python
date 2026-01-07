@@ -1,11 +1,17 @@
 #pragma once
-#ifndef WIN32_LEAN_AND_MEAN
+
+#ifdef _WIN32
+    #ifndef WIN32_LEAN_AND_MEAN
+    #define WIN32_LEAN_AND_MEAN
+    #endif
+    //File selectors - Only Windows
+    #define byte win_byte
+    #include <windows.h>
+    #include <shobjidl.h>
+    #undef byte
+#else
+   //Placeholder for non-Windows systems    
 #endif
-//File selectors - Only Windows
-#define byte win_byte
-#include <windows.h>
-#include <shobjidl.h>
-#undef byte
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -36,7 +42,11 @@ private:
     std::vector<std::vector<char>> updateBoard();
     void updateCurrentLevelNamesList();
     bool isLevelValid(std::filesystem::path levelPath);
+    void fixFileLinesLength(std::filesystem::path levelPath);
+
+    #ifdef _WIN32
     std::filesystem::path windowsFileSelection(HWND owner = NULL);
+    #endif
 
 public:
     LevelMenager(const std::string fName = "Levels");

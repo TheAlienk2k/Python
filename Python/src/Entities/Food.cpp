@@ -35,13 +35,14 @@ void BasicFood::expireEffect(Snake& snake)
 
 
 
+
 SpicyFood::SpicyFood(int x, int y)
 {
 	coordinates[0] = x;
 	coordinates[1] = y;
 	
 	scoreValue = 3;
-	effectDurration = 10.f;
+	effectDurration = 15.f;
 	stackable = true;
 	id = 2;
 
@@ -59,10 +60,137 @@ SpicyFood::SpicyFood(int x, int y)
 
 void SpicyFood::applyEffect(Snake& snake)
 {                                             
-	snake.setMaxMoveTime(snake.getMaxMoveTime() - 0.02f);
+	if (activeStacks < maxStacks)
+	{
+		snake.setMaxMoveTime(snake.getMaxMoveTime() - accelerationValue);
+		activeStacks++;
+
+		this->appliedSuccessfully = true;
+	}
+	else
+	{
+		this->appliedSuccessfully = false;
+	}
 }
 
 void SpicyFood::expireEffect(Snake& snake)
 {
-	snake.setMaxMoveTime(snake.getMaxMoveTime() + 0.02f);
+	if (this->appliedSuccessfully)
+	{
+		snake.setMaxMoveTime(snake.getMaxMoveTime() + accelerationValue);
+		activeStacks--;
+	}
+}
+
+
+
+
+
+ReverserFood::ReverserFood(int x, int y)
+{
+	coordinates[0] = x;
+	coordinates[1] = y;
+
+	scoreValue = 10;
+	effectDurration = 8.f;
+	stackable = false;
+	id = 3;
+
+	static sf::Texture basicTexture;
+	static bool isLoaded = false;
+
+	if (!isLoaded)
+	{
+		if (!basicTexture.loadFromFile("Textures/FoodTextures/lemonFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury ReverserFood \n"; }
+		std::cout << "Zaladowano texture ReverserFood" << "\n";
+		isLoaded = true;
+	}
+	texture = &basicTexture;
+}
+
+void ReverserFood::applyEffect(Snake& snake)
+{
+	snake.reverseControls(true);
+}
+
+void ReverserFood::expireEffect(Snake& snake)
+{
+	snake.reverseControls(false);
+	char current = snake.getDirection();
+	if (current == 'w') snake.setCurrentSnakeDirection('s');
+	else if (current == 's') snake.setCurrentSnakeDirection('w');
+	else if (current == 'a') snake.setCurrentSnakeDirection('d');
+	else if (current == 'd') snake.setCurrentSnakeDirection('a');
+}
+
+
+
+
+
+CuttingFood::CuttingFood(int x, int y)
+{
+	coordinates[0] = x;
+	coordinates[1] = y;
+
+	scoreValue = 1;
+	effectDurration = 10.f;
+	stackable = false;
+	id = 4;
+
+	static sf::Texture basicTexture;
+	static bool isLoaded = false;
+
+	if (!isLoaded)
+	{
+		if (!basicTexture.loadFromFile("Textures/FoodTextures/mysteriousFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury CuttingFood \n"; }
+		std::cout << "Zaladowano texture CuttingFood" << "\n";
+		isLoaded = true;
+	}
+	texture = &basicTexture;
+}
+
+void CuttingFood::applyEffect(Snake& snake)
+{
+	snake.slicedSnake(true);
+}
+
+void CuttingFood::expireEffect(Snake& snake)
+{
+	snake.slicedSnake(false);
+}
+
+
+
+
+
+GodFood::GodFood(int x, int y)
+{
+	coordinates[0] = x;
+	coordinates[1] = y;
+
+	scoreValue = 5;
+	effectDurration = 6.f;
+	stackable = false;
+	id = 4;
+
+	static sf::Texture basicTexture;
+	static bool isLoaded = false;
+
+	if (!isLoaded)
+	{
+		if (!basicTexture.loadFromFile("Textures/FoodTextures/godFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury GodFood \n"; }
+		std::cout << "Zaladowano texture GodFood" << "\n";
+		isLoaded = true;
+	}
+	texture = &basicTexture;
+}
+
+void GodFood::applyEffect(Snake& snake)
+{
+	snake.godMode(true);
+}
+
+void GodFood::expireEffect(Snake& snake)
+{
+	snake.godMode(false);
 }

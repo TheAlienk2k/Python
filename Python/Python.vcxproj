@@ -108,12 +108,13 @@
       </AdditionalHeaderUnitDependencies>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;windowscodecs.lib;gdi32.lib;ole32.lib;uuid.lib;comdlg32.lib;winmm.lib
 ;
 advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -134,12 +135,13 @@ advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       </AdditionalHeaderUnitDependencies>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\LibC++\SFML-3.0.2-windows-vc17-64-bit\SFML-3.0.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;windowscodecs.lib;gdi32.lib;ole32.lib;uuid.lib;comdlg32.lib;winmm.lib
 ;
 advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -249,5 +251,8 @@ advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <Image Include="Textures\FoodTextures\spicyFood.png" />
     <Image Include="Textures\SnakeTextures\Face.png" />
     <Image Include="Textures\SnakeTextures\Head.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SavedData\BestScores.json" />
   </ItemGroup>
 </Project>

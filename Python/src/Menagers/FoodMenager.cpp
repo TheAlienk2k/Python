@@ -10,6 +10,9 @@ FoodMenager::FoodMenager(std::vector<std::vector<char>> board)
 {
 	foodTypes.push_back({ []() {return new BasicFood(); }, BasicFood::rngWeight});
 	foodTypes.push_back({ []() {return new SpicyFood(); }, SpicyFood::rngWeight});
+	foodTypes.push_back({ []() {return new ReverserFood(); }, ReverserFood::rngWeight });
+	foodTypes.push_back({ []() {return new CuttingFood(); }, CuttingFood::rngWeight });
+	foodTypes.push_back({ []() {return new GodFood(); }, GodFood::rngWeight });
 
 	for (FoodType& type : foodTypes) {
 		weightSum += type.weight;

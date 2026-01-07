@@ -48,7 +48,42 @@ class SpicyFood : public Food
 public:
 	static inline int rngWeight = 10;
 
+	bool appliedSuccessfully;
+	const int maxStacks = 6;
+	const float accelerationValue = 0.02f;
+	static inline int activeStacks = 0;
+
 	SpicyFood(int x = 0, int y = 0);
+	void applyEffect(Snake& snake) override;
+	void expireEffect(Snake& snake) override;
+};
+
+class ReverserFood : public Food
+{
+public:
+	static inline int rngWeight = 5;
+
+	ReverserFood(int x = 0, int y = 0);
+	void applyEffect(Snake& snake) override;
+	void expireEffect(Snake& snake) override;
+};
+
+class CuttingFood : public Food
+{
+public:
+	static inline int rngWeight = 5;
+
+	CuttingFood(int x = 0, int y = 0);
+	void applyEffect(Snake& snake) override;
+	void expireEffect(Snake& snake) override;
+};
+
+class GodFood : public Food
+{
+public:
+	static inline int rngWeight = 1;
+
+	GodFood(int x = 0, int y = 0);
 	void applyEffect(Snake& snake) override;
 	void expireEffect(Snake& snake) override;
 };

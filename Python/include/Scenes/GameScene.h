@@ -41,10 +41,10 @@ private:
 
 	const sf::Color snakeColor  = sf::Color::Green;
 	const sf::Color boardWallColor = sf::Color::White;
-	const int boardBlockSize = 32;
+	int boardBlockSize = 32;
+	int boardBlockMargin = 5;
 	const int boardMarginX = 50;
 	const int boardMarginY = 50;
-	const int boardBlockMargin = 5;
 
 	int heightOfBoard;
 	const sf::Color effectTimerColor = sf::Color::Green;
@@ -84,6 +84,8 @@ public:
 		if (!headTexture.loadFromFile("Textures/SnakeTextures/Face.png")) {
 			cout << "Blad w ladowaniu tekstury glowy" << "\n";
 		}
+
+		boardScaling(gameWindow);
 
 		menuBackGround.setPosition(sf::Vector2f(0, 0));
 		menuBackGround.setFillColor(sf::Color(0, 0, 0, 245));
@@ -253,6 +255,17 @@ public:
 		sf::RectangleShape block(sf::Vector2f(boardBlockSize, boardBlockSize));
 		block.setFillColor(boardWallColor);
 
+		sf::RectangleShape boardWalls(sf::Vector2f(
+			board[0].size() * (boardBlockSize + boardBlockMargin) - boardBlockMargin,
+			board.size() * (boardBlockSize + boardBlockMargin) - boardBlockMargin
+		));
+        boardWalls.setFillColor(sf::Color::Transparent);
+        boardWalls.setOutlineColor(sf::Color::Yellow);
+        boardWalls.setOutlineThickness(4);
+        boardWalls.setPosition(sf::Vector2f(boardMarginX, boardMarginY));
+
+		gameWindow.draw(boardWalls);
+
 		for (int y = 0; y < board.size(); y++) {
 			for (int x = 0; x < board[y].size(); x++)
 			{
@@ -266,24 +279,41 @@ public:
 
 	void snakeRender(sf::RenderWindow& gameWindow) {
 		sf::RectangleShape snakeBlock(sf::Vector2f(boardBlockSize, boardBlockSize));
-		snakeBlock.setFillColor(snakeColor);
+
+		if(snake.isSnakeInGodMode() == false) {
+			snakeBlock.setFillColor(snakeColor);
+		}
+		else {
+			snakeBlock.setFillColor(sf::Color(200,200,0,200));
+		}
 
 		bool isHead = true;
-		for (array<int, 2> cord : snake.getSnakeCords()) {
-			snakeBlock.setPosition(sf::Vector2f(boardMarginX + (cord[0] * (boardBlockMargin + boardBlockSize)), boardMarginY + (cord[1] * (boardBlockMargin + boardBlockSize))));
+		for (const std::array<int, 2>&cord : snake.getSnakeCords()) {
+			snakeBlock.setPosition(sf::Vector2f(
+				boardMarginX + (cord[0] * (boardBlockMargin + boardBlockSize)),
+				boardMarginY + (cord[1] * (boardBlockMargin + boardBlockSize))
+			));
 			gameWindow.draw(snakeBlock);
 
 			if (isHead) {
 				sf::Sprite snakeHead(headTexture);
 				snakeHead.setTextureRect(sf::IntRect({ 0,0 }, { 32, 32 }));
-				snakeHead.setOrigin(sf::Vector2f(snakeHead.getGlobalBounds().getCenter().x, snakeHead.getGlobalBounds().getCenter().y));
-				snakeHead.setScale(sf::Vector2f(static_cast<float>(boardBlockSize)/32.f, static_cast<float>(boardBlockSize)/32.f));
-				snakeHead.setPosition(sf::Vector2f(boardMarginX + (cord[0] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize/2), boardMarginY + (cord[1] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize / 2)));
+				snakeHead.setOrigin(sf::Vector2f(16.f, 16.f));
 
-				if (snake.getDirection() == 'd') snakeHead.setRotation(sf::degrees(90.f));
-				else if (snake.getDirection() == 's') snakeHead.setRotation(sf::degrees(180.f));
-				else if (snake.getDirection() == 'a') snakeHead.setRotation(sf::degrees(270.f));
-				
+				float scale = static_cast<float>(boardBlockSize) / 32.f;
+				snakeHead.setScale(sf::Vector2f(scale, scale));
+
+				float posX = boardMarginX + (cord[0] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize / 2.f);
+				float posY = boardMarginY + (cord[1] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize / 2.f);
+				snakeHead.setPosition(sf::Vector2f(posX, posY));
+
+				sf::Vector2i actualDir = snake.getLastActualDirection();
+
+				if (actualDir.x == 1)      snakeHead.setRotation(sf::degrees(90.f));  // prawo
+				else if (actualDir.x == -1) snakeHead.setRotation(sf::degrees(270.f)); // lewo
+				else if (actualDir.y == 1)  snakeHead.setRotation(sf::degrees(180.f)); // do³
+				else if (actualDir.y == -1) snakeHead.setRotation(sf::degrees(0.f));   // gora
+
 				gameWindow.draw(snakeHead);
 				isHead = false;
 			}
@@ -403,5 +433,19 @@ public:
 		}
 	}
 
+	void boardScaling(sf::RenderWindow& gameWindow) {
+		float maxBoardW = gameWindow.getSize().x * 0.60f; //max % szerokoœci okna
+		float maxBoardH = gameWindow.getSize().y * 0.60f; //max % d³ugoœæ okna
+
+		int cols = board[0].size();
+		int rows = board.size();
+
+		float sizeByWidth = (maxBoardW + boardBlockMargin) / cols - boardBlockMargin;
+		float sizeByHeight = (maxBoardH + boardBlockMargin) / rows - boardBlockMargin;
+
+		boardBlockSize = std::min(sizeByWidth, sizeByHeight);
+
+		if (boardBlockSize < 1.0f) boardBlockSize = 1.0f;
+	}
 };
 
