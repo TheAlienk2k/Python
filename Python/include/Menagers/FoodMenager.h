@@ -24,7 +24,7 @@ private:
 	std::mt19937 randGen;
 
 	int weightSum = 0;
-	const float foodMaxGenerationTime = 3.6f;
+	const float foodMaxGenerationTime = 3.5f;
 	float foodGenerationTimer = 0.0f;
 
 

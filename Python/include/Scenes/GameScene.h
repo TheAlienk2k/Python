@@ -23,6 +23,10 @@ private:
 	sf::Font buttonsFont;
 	sf::Texture headTexture;
 	sf::Text scoreText;
+
+	std::optional<sf::RenderTexture> lightLayer;
+	std::optional<sf::Sprite> lightSprite;
+	bool isLightLayerCreated = false;
 	
 	sf::RectangleShape menuBackGround;
 	double pauseMenuButtonsHeight = 0;
@@ -46,6 +50,9 @@ private:
 	const int boardMarginX = 50;
 	const int boardMarginY = 50;
 
+	sf::Vector2f finalBoardSize;
+	sf::Vector2f finalBoardPos;
+
 	int heightOfBoard;
 	const sf::Color effectTimerColor = sf::Color::Green;
 	const int effectBlockSize = 52;
@@ -63,6 +70,8 @@ public:
 	GameScene(sf::RenderWindow& gameWindow, SceneMenager* menag, LevelMenager& levelMenag)
 	:sceneMenager(menag)
 	,levelMenager(levelMenag)
+	,lightLayer()
+	,lightSprite{}
 	,menuBackGround(sf::Vector2f(gameWindow.getSize().x, gameWindow.getSize().y))
 	,pauseMenuHeader(titleFont)
 	,resumePauseButton(buttonsFont)
@@ -97,12 +106,12 @@ public:
 		pauseMenuHeader.setPosition(sf::Vector2f((gameWindow.getSize().x - pauseMenuHeader.getLocalBounds().size.x) / 2, 10));
 
 		resumePauseButton.setFont(buttonsFont);
-		resumePauseButton.setString(">RESUME");
+		resumePauseButton.setString("RESUME");
 		resumePauseButton.setCharacterSize(60);
 		resumePauseButton.setFillColor(sf::Color::White);
 		
 		exitButton.setFont(buttonsFont);
-		exitButton.setString(">EXIT");
+		exitButton.setString("EXIT");
 		exitButton.setCharacterSize(60);
 		exitButton.setFillColor(sf::Color::White);
 
@@ -126,7 +135,7 @@ public:
 		finalScoreText.setPosition(sf::Vector2f((gameWindow.getSize().x - finalScoreText.getLocalBounds().size.x) / 2, 175));
 
 		playAgainButton.setFont(buttonsFont);
-		playAgainButton.setString(">PLAY AGAIN");
+		playAgainButton.setString("PLAY AGAIN");
 		playAgainButton.setCharacterSize(60);
 		playAgainButton.setFillColor(sf::Color::White);
 
@@ -147,59 +156,22 @@ public:
 	void eventHandler(sf::Event event, sf::RenderWindow& gameWindow) override {
 
 		if (event.is<sf::Event::MouseMoved>()) {
-			if (exitButton.getFillColor() == sf::Color::White
-				&& exitButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-
-				exitButton.setString("> EXIT");
-				exitButton.setFillColor(sf::Color::Red);
-			}
-			else if (exitButton.getFillColor() == sf::Color::Red
-				&& !exitButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-
-				exitButton.setString(">EXIT");
-				exitButton.setFillColor(sf::Color::White);
-			}
-
-			if (resumePauseButton.getFillColor() == sf::Color::White
-				&& resumePauseButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-
-				resumePauseButton.setString("> RESUME");
-				resumePauseButton.setFillColor(sf::Color::Green);
-			}
-			else if (resumePauseButton.getFillColor() == sf::Color::Green
-				&& !resumePauseButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-
-				resumePauseButton.setString(">RESUME");
-				resumePauseButton.setFillColor(sf::Color::White);
-			}
-
-			if (playAgainButton.getFillColor() == sf::Color::White
-				&& playAgainButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-
-				playAgainButton.setString("> PLAY AGAIN");
-				playAgainButton.setFillColor(sf::Color::Green);
-			}
-			else if (playAgainButton.getFillColor() == sf::Color::Green
-				&& !playAgainButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-
-				playAgainButton.setString(">PLAY AGAIN");
-				playAgainButton.setFillColor(sf::Color::White);
-			}
+			buttonHoverEffect(exitButton, gameWindow, sf::Color::White, sf::Color::Red, "EXIT", ">EXIT<", 1);
+			buttonHoverEffect(resumePauseButton, gameWindow, sf::Color::White, sf::Color::Green, "RESUME", ">RESUME<", 1);
+			buttonHoverEffect(playAgainButton, gameWindow, sf::Color::White, sf::Color::Green, "PLAY AGAIN", ">PLAY AGAIN<", 1);
 		}
 
-		if (event.is<sf::Event::MouseButtonPressed>() && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-			if (exitButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				sceneMenager->loadLevelSelectScene();
-			}
-
-			else if (playAgainButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				sceneMenager->loadGameScene();
-			}
-
-			else if (resumePauseButton.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				isPaused = false;
-			}
+		
+		if (buttonClicked(exitButton, gameWindow, event)) {
+			sceneMenager->loadLevelSelectScene();
 		}
+		else if (buttonClicked(playAgainButton, gameWindow, event)) {
+			sceneMenager->loadGameScene();
+		}
+		else if (buttonClicked(resumePauseButton, gameWindow, event)) {
+			isPaused = false;
+		}
+		
 
 		if (auto key = event.getIf<sf::Event::KeyPressed>()) {
 
@@ -243,6 +215,10 @@ public:
 		scoreRender(gameWindow);
 		effectTimerRender(gameWindow);
 
+		if (snake.isSnakeBlinded() == true) {
+			renderSnakeBlindArea(gameWindow);
+		}
+
 		if (snake.getStatus() == false) {
 			gameOverMenuRender(gameWindow);
 		}
@@ -255,14 +231,11 @@ public:
 		sf::RectangleShape block(sf::Vector2f(boardBlockSize, boardBlockSize));
 		block.setFillColor(boardWallColor);
 
-		sf::RectangleShape boardWalls(sf::Vector2f(
-			board[0].size() * (boardBlockSize + boardBlockMargin) - boardBlockMargin,
-			board.size() * (boardBlockSize + boardBlockMargin) - boardBlockMargin
-		));
-        boardWalls.setFillColor(sf::Color::Transparent);
-        boardWalls.setOutlineColor(sf::Color::Yellow);
-        boardWalls.setOutlineThickness(4);
-        boardWalls.setPosition(sf::Vector2f(boardMarginX, boardMarginY));
+		sf::RectangleShape boardWalls(finalBoardSize);
+		boardWalls.setFillColor(sf::Color::Transparent);
+		boardWalls.setOutlineColor(sf::Color::Yellow);
+		boardWalls.setOutlineThickness(4);
+		boardWalls.setPosition(finalBoardPos);
 
 		gameWindow.draw(boardWalls);
 
@@ -446,6 +419,55 @@ public:
 		boardBlockSize = std::min(sizeByWidth, sizeByHeight);
 
 		if (boardBlockSize < 1.0f) boardBlockSize = 1.0f;
+
+		finalBoardSize = sf::Vector2f(
+			cols * (boardBlockSize + boardBlockMargin) - boardBlockMargin,
+			rows * (boardBlockSize + boardBlockMargin) - boardBlockMargin
+		);
+		finalBoardPos = sf::Vector2f(boardMarginX, boardMarginY);
+	}
+
+	void renderSnakeBlindArea(sf::RenderWindow& gameWindow) {
+		if (!isLightLayerCreated) {
+			lightLayer.emplace(sf::Vector2u(
+				static_cast<unsigned int>(finalBoardSize.x),
+				static_cast<unsigned int>(finalBoardSize.y)
+			));
+			lightSprite.emplace(lightLayer->getTexture());
+			isLightLayerCreated = true;
+		}
+
+		lightLayer->clear(sf::Color::Black);
+
+		float posX = (snake.getSnakeCords().at(0)[0] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize / 2.f);
+		float posY = (snake.getSnakeCords().at(0)[1] * (boardBlockMargin + boardBlockSize)) + (boardBlockSize / 2.f);
+
+		float baseRadius = boardBlockSize * 2.5f;
+		int steps = 15;
+
+		for (int i = steps; i > 0; --i) {
+			float r = baseRadius * (1.0f + (float)i / steps);
+			sf::CircleShape lightCircle(r);
+			lightCircle.setOrigin({ r, r });
+			lightCircle.setPosition({ posX, posY });
+
+			int alphaValue = 255 - (255 * (steps - i) / steps);
+			lightCircle.setFillColor(sf::Color(0, 0, 0, static_cast<uint8_t>(alphaValue)));
+			lightLayer->draw(lightCircle, sf::BlendNone);
+		}
+
+		sf::CircleShape centerHole(baseRadius);
+		centerHole.setOrigin({ baseRadius, baseRadius });
+		centerHole.setPosition({ posX, posY });
+		centerHole.setFillColor(sf::Color::Transparent);
+		lightLayer->draw(centerHole, sf::BlendNone);
+
+		lightLayer->display();
+
+		if (lightSprite) {
+			lightSprite->setPosition(finalBoardPos);
+			gameWindow.draw(*lightSprite);
+		}
 	}
 };
 

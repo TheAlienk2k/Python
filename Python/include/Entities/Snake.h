@@ -31,13 +31,15 @@ private:
 
 	bool isGodModeActive = false;
 
+	bool isBlinded = false;
+
 	sf::Vector2i lastActualDirection;
 
 	float snakeMaxMoveTime = 0.18f;
 	float snakeMoveTimer = 0.0f;
 
 	char currentDirection; //MA£E LITERY!!!! 'w'-góra 's'-dó³ 'a'-lewo 'd'-prawo
-	const int inputQueueMaxSize = 1;
+	const int inputQueueMaxSize = 2;
 	std::queue<char> inputQueue;
 
 public:
@@ -84,5 +86,9 @@ public:
 	void godMode(bool isActive);
 
 	bool isSnakeInGodMode();
+
+	void blinded(bool isActive);
+
+	bool isSnakeBlinded();
 };
 

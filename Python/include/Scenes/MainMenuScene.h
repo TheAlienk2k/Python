@@ -53,27 +53,12 @@ public:
 	void eventHandler(sf::Event event, sf::RenderWindow &gameWindow) override {
 
 		if (event.is<sf::Event::MouseMoved>()) {
-			if (soloPlayBtn.getFillColor() == sf::Color::White 
-				&& soloPlayBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-
-				soloPlayBtn.setString("> Singleplayer");
-				soloPlayBtn.setFillColor(sf::Color::Green);
-			}
-			else if (soloPlayBtn.getFillColor() == sf::Color::Green
-				&& !soloPlayBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-
-				soloPlayBtn.setString(">Singleplayer");
-				soloPlayBtn.setFillColor(sf::Color::White);
-			}
+			buttonHoverEffect(soloPlayBtn, gameWindow, sf::Color::White, sf::Color::Green, ">Singleplayer", "> Singleplayer");
 		}
 
-		if (event.is<sf::Event::MouseButtonPressed>() && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-			if (soloPlayBtn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(gameWindow).x, sf::Mouse::getPosition(gameWindow).y))) {
-				menager->loadLevelSelectScene();
-			}
+		if (buttonClicked(soloPlayBtn, gameWindow, event)) {
+			menager->loadLevelSelectScene();
 		}
-
-
 	}
 
 	void update(float deltaTime) override {}

@@ -14,35 +14,36 @@ Snake::Snake(int x, int y, char direction)
 }
 
 void Snake::snakeDirectionChange(const sf::Event::KeyPressed& key) {
-	if (isAlive == false) return;
+	if (isAlive == false) { return; }
 
-	if ((key.code == sf::Keyboard::Key::W)) {
-		if ((!inputQueue.empty() && inputQueue.size() <= inputQueueMaxSize && inputQueue.back() != 's')
-			|| (inputQueue.empty() && currentDirection != 's')) {
+	sf::Keyboard::Key code = key.code;
 
-			inputQueue.push('w');
-		}
+	if (isMovementReversed == true) {
+		if (code == sf::Keyboard::Key::W) { code = sf::Keyboard::Key::S; }
+		else if (code == sf::Keyboard::Key::S) { code = sf::Keyboard::Key::W; }
+		else if (code == sf::Keyboard::Key::A) { code = sf::Keyboard::Key::D; }
+		else if (code == sf::Keyboard::Key::D) { code = sf::Keyboard::Key::A; }
 	}
-	else if ((key.code == sf::Keyboard::Key::S)) {
-		if ((!inputQueue.empty() && inputQueue.size() <= inputQueueMaxSize && inputQueue.back() != 'w')
-			|| (inputQueue.empty() && currentDirection != 'w')) {
 
-			inputQueue.push('s');
-		}
+	char newDir = ' ';
+	char opposite = ' ';
+
+	if (code == sf::Keyboard::Key::W) { newDir = 'w'; opposite = 's'; }
+	else if (code == sf::Keyboard::Key::S) { newDir = 's'; opposite = 'w'; }
+	else if (code == sf::Keyboard::Key::A) { newDir = 'a'; opposite = 'd'; }
+	else if (code == sf::Keyboard::Key::D) { newDir = 'd'; opposite = 'a'; }
+	else return;
+
+	char lastDir = ' ';
+	if(inputQueue.empty()){
+		lastDir = currentDirection;
 	}
-	else if(key.code == sf::Keyboard::Key::A) {
-		if ((!inputQueue.empty() && inputQueue.size() <= inputQueueMaxSize && inputQueue.back() != 'd')
-			|| (inputQueue.empty() && currentDirection != 'd')) {
-
-			inputQueue.push('a');
-		}
+	else {
+		lastDir = inputQueue.back();
 	}
-	else if(key.code == sf::Keyboard::Key::D) {
-		if ((!inputQueue.empty() && inputQueue.size() <= inputQueueMaxSize && inputQueue.back() != 'a')
-			|| (inputQueue.empty() && currentDirection != 'a')) {
 
-			inputQueue.push('d');
-		}
+	if (lastDir != opposite && inputQueue.size() < inputQueueMaxSize && newDir != lastDir) {
+		inputQueue.push(newDir);
 	}
 }
 
@@ -60,25 +61,6 @@ void Snake::snakeMove(float deltaTime, std::vector<std::vector<char>>& board, Fo
 		else if (currentDirection == 's') directionChange = { 0, 1 };
 		else if (currentDirection == 'a') directionChange = { -1, 0 };
 		else if (currentDirection == 'd') directionChange = { 1, 0 };
-
-		if (isMovementReversed) {
-			directionChange[0] *= -1;
-			directionChange[1] *= -1;
-		}
-
-		if (snakeBlocksCords.size() > 1) {
-			int nextX = snakeHeadX + directionChange[0];
-			int nextY = snakeHeadY + directionChange[1];
-
-			if (nextY < 0) nextY = board.size() - 1;
-			else if (nextY >= (int)board.size()) nextY = 0;
-			if (nextX < 0) nextX = board[nextY].size() - 1;
-			else if (nextX >= (int)board[nextY].size()) nextX = 0;
-
-			if (nextX == snakeBlocksCords[1][0] && nextY == snakeBlocksCords[1][1]) {
-				directionChange = { lastActualDirection.x, lastActualDirection.y };
-			}
-		}
 
 		int newX = snakeHeadX + directionChange[0];
 		int newY = snakeHeadY + directionChange[1];
@@ -280,4 +262,12 @@ void Snake::godMode(bool isActive) {
 
 bool Snake::isSnakeInGodMode() {
 	return isGodModeActive;
+}
+
+void Snake::blinded(bool isActive) {
+	isBlinded = isActive;
+}
+
+bool Snake::isSnakeBlinded() {
+	return isBlinded;
 }

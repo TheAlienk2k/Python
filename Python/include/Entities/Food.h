@@ -87,3 +87,13 @@ public:
 	void applyEffect(Snake& snake) override;
 	void expireEffect(Snake& snake) override;
 };
+
+class BlindingFood : public Food
+{
+public:
+	static inline int rngWeight = 5;
+
+	BlindingFood(int x = 0, int y = 0);
+	void applyEffect(Snake& snake) override;
+	void expireEffect(Snake& snake) override;
+};

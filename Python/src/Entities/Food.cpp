@@ -116,11 +116,6 @@ void ReverserFood::applyEffect(Snake& snake)
 void ReverserFood::expireEffect(Snake& snake)
 {
 	snake.reverseControls(false);
-	char current = snake.getDirection();
-	if (current == 'w') snake.setCurrentSnakeDirection('s');
-	else if (current == 's') snake.setCurrentSnakeDirection('w');
-	else if (current == 'a') snake.setCurrentSnakeDirection('d');
-	else if (current == 'd') snake.setCurrentSnakeDirection('a');
 }
 
 
@@ -171,7 +166,7 @@ GodFood::GodFood(int x, int y)
 	scoreValue = 5;
 	effectDurration = 6.f;
 	stackable = false;
-	id = 4;
+	id = 5;
 
 	static sf::Texture basicTexture;
 	static bool isLoaded = false;
@@ -193,4 +188,40 @@ void GodFood::applyEffect(Snake& snake)
 void GodFood::expireEffect(Snake& snake)
 {
 	snake.godMode(false);
+}
+
+
+
+
+
+BlindingFood::BlindingFood(int x, int y)
+{
+	coordinates[0] = x;
+	coordinates[1] = y;
+
+	scoreValue = 7;
+	effectDurration = 10.f;
+	stackable = false;
+	id = 6;
+
+	static sf::Texture basicTexture;
+	static bool isLoaded = false;
+
+	if (!isLoaded)
+	{
+		if (!basicTexture.loadFromFile("Textures/FoodTextures/rottenFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury BlindingFood \n"; }
+		std::cout << "Zaladowano texture BlindingFood" << "\n";
+		isLoaded = true;
+	}
+	texture = &basicTexture;
+}
+
+void BlindingFood::applyEffect(Snake& snake)
+{
+	snake.blinded(true);
+}
+
+void BlindingFood::expireEffect(Snake& snake)
+{
+	snake.blinded(false);
 }
