@@ -84,13 +84,13 @@ public:
 	,snake(levelMenag.getSnakeCordsAtStart()[0], levelMenag.getSnakeCordsAtStart()[1], levelMenag.getSnakeDirectionAtStart())
 	,foodMenager(board)
 	{
-		if (!titleFont.openFromFile("Fonts/blocked.ttf")) {
+		if (!titleFont.openFromFile("Assets/Fonts/blocked.ttf")) {
 			cout << "Blad w ladowaniu czcionki" << "\n";
 		}
-		if (!buttonsFont.openFromFile("Fonts/blocks.ttf")) {
+		if (!buttonsFont.openFromFile("Assets/Fonts/blocks.ttf")) {
 			cout << "Blad w ladowaniu czcionki" << "\n";
 		}
-		if (!headTexture.loadFromFile("Textures/SnakeTextures/Face.png")) {
+		if (!headTexture.loadFromFile("Assets/Textures/SnakeTextures/Face.png")) {
 			cout << "Blad w ladowaniu tekstury glowy" << "\n";
 		}
 

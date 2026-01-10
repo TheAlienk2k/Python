@@ -17,7 +17,7 @@ BasicFood::BasicFood(int x, int y)
 
 	if (!isLoaded)
 	{
-		if (!basicTexture.loadFromFile("Textures/FoodTextures/basicFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury BasicFood \n"; }
+		if (!basicTexture.loadFromFile("Assets/Textures/FoodTextures/basicFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury BasicFood \n"; }
 		std::cout << "Zaladowano texture basicFood" << "\n";
 		isLoaded = true;
 	}
@@ -51,7 +51,7 @@ SpicyFood::SpicyFood(int x, int y)
 
 	if (!isLoaded)
 	{
-		if (!basicTexture.loadFromFile("Textures/FoodTextures/spicyFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury spicyFood \n"; }
+		if (!basicTexture.loadFromFile("Assets/Textures/FoodTextures/spicyFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury spicyFood \n"; }
 		std::cout << "Zaladowano texture spicysFood" << "\n";
 		isLoaded = true;
 	}
@@ -101,7 +101,7 @@ ReverserFood::ReverserFood(int x, int y)
 
 	if (!isLoaded)
 	{
-		if (!basicTexture.loadFromFile("Textures/FoodTextures/lemonFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury ReverserFood \n"; }
+		if (!basicTexture.loadFromFile("Assets/Textures/FoodTextures/lemonFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury ReverserFood \n"; }
 		std::cout << "Zaladowano texture ReverserFood" << "\n";
 		isLoaded = true;
 	}
@@ -137,7 +137,7 @@ CuttingFood::CuttingFood(int x, int y)
 
 	if (!isLoaded)
 	{
-		if (!basicTexture.loadFromFile("Textures/FoodTextures/mysteriousFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury CuttingFood \n"; }
+		if (!basicTexture.loadFromFile("Assets/Textures/FoodTextures/mysteriousFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury CuttingFood \n"; }
 		std::cout << "Zaladowano texture CuttingFood" << "\n";
 		isLoaded = true;
 	}
@@ -173,7 +173,7 @@ GodFood::GodFood(int x, int y)
 
 	if (!isLoaded)
 	{
-		if (!basicTexture.loadFromFile("Textures/FoodTextures/godFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury GodFood \n"; }
+		if (!basicTexture.loadFromFile("Assets/Textures/FoodTextures/godFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury GodFood \n"; }
 		std::cout << "Zaladowano texture GodFood" << "\n";
 		isLoaded = true;
 	}
@@ -209,7 +209,7 @@ BlindingFood::BlindingFood(int x, int y)
 
 	if (!isLoaded)
 	{
-		if (!basicTexture.loadFromFile("Textures/FoodTextures/rottenFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury BlindingFood \n"; }
+		if (!basicTexture.loadFromFile("Assets/Textures/FoodTextures/rottenFood.png")) { std::cout << "Blad: nie udalo sie wczytac tekstury BlindingFood \n"; }
 		std::cout << "Zaladowano texture BlindingFood" << "\n";
 		isLoaded = true;
 	}

@@ -47,9 +47,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Fonts\blocks.ttf" />
-    <Font Include="Fonts\blocked.ttf" />
-    <Font Include="Fonts\arial.ttf" />
+    <Font Include="Assets\Fonts\blocks.ttf" />
+    <Font Include="Assets\Fonts\blocked.ttf" />
+    <Font Include="Assets\Fonts\arial.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Scenes\Scene.h">
@@ -222,33 +222,34 @@
     <Text Include="Levels\dhdsfgh.txt" />
     <Text Include="Levels\gdfhgfahgshdaah.txt" />
     <Text Include="Levels\Level dsads.txt" />
+    <Text Include="exclude.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Textures\SnakeTextures\Face.png">
+    <Image Include="Assets\Textures\SnakeTextures\Face.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
-    <Image Include="Textures\SnakeTextures\Head.png">
+    <Image Include="Assets\Textures\SnakeTextures\Head.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
-    <Image Include="Textures\FoodTextures\bananFood.png">
+    <Image Include="Assets\Textures\FoodTextures\bananFood.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
-    <Image Include="Textures\FoodTextures\basicFood.png">
+    <Image Include="Assets\Textures\FoodTextures\basicFood.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
-    <Image Include="Textures\FoodTextures\godFood.png">
+    <Image Include="Assets\Textures\FoodTextures\godFood.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
-    <Image Include="Textures\FoodTextures\lemonFood.png">
+    <Image Include="Assets\Textures\FoodTextures\lemonFood.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
-    <Image Include="Textures\FoodTextures\mysteriousFood.png">
+    <Image Include="Assets\Textures\FoodTextures\mysteriousFood.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
-    <Image Include="Textures\FoodTextures\rottenFood.png">
+    <Image Include="Assets\Textures\FoodTextures\rottenFood.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
-    <Image Include="Textures\FoodTextures\spicyFood.png">
+    <Image Include="Assets\Textures\FoodTextures\spicyFood.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
   </ItemGroup>

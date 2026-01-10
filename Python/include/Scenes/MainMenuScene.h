@@ -24,10 +24,10 @@ public:
 		, multiPlayBtn(buttonsFont)
 	    {
 
-		if (!titleFont.openFromFile("Fonts/blocked.ttf")) {
+		if (!titleFont.openFromFile("Assets/Fonts/blocked.ttf")) {
 			cout<<"Blad w ladowaniu czcionki" << "\n";
 		}
-		if (!buttonsFont.openFromFile("Fonts/blocks.ttf")) {
+		if (!buttonsFont.openFromFile("Assets/Fonts/blocks.ttf")) {
 			cout << "Blad w ladowaniu czcionki" << "\n";
 		}
 

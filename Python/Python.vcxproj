@@ -144,8 +144,9 @@ advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy "$(ProjectDir)" "$(TargetDir)" /E /I /Y</Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -161,9 +162,9 @@ advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="src\Entities\Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Fonts\arial.ttf" />
-    <Font Include="Fonts\blocked.ttf" />
-    <Font Include="Fonts\blocks.ttf" />
+    <Font Include="Assets\Fonts\arial.ttf" />
+    <Font Include="Assets\Fonts\blocked.ttf" />
+    <Font Include="Assets\Fonts\blocks.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Entities\Food.h" />
@@ -223,6 +224,7 @@ advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="lib\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="exclude.txt" />
     <Text Include="Levels\dhdsfgh.txt">
       <DeploymentContent>true</DeploymentContent>
     </Text>
@@ -242,15 +244,15 @@ advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Textures\FoodTextures\bananFood.png" />
-    <Image Include="Textures\FoodTextures\basicFood.png" />
-    <Image Include="Textures\FoodTextures\godFood.png" />
-    <Image Include="Textures\FoodTextures\lemonFood.png" />
-    <Image Include="Textures\FoodTextures\mysteriousFood.png" />
-    <Image Include="Textures\FoodTextures\rottenFood.png" />
-    <Image Include="Textures\FoodTextures\spicyFood.png" />
-    <Image Include="Textures\SnakeTextures\Face.png" />
-    <Image Include="Textures\SnakeTextures\Head.png" />
+    <Image Include="Assets\Textures\FoodTextures\bananFood.png" />
+    <Image Include="Assets\Textures\FoodTextures\basicFood.png" />
+    <Image Include="Assets\Textures\FoodTextures\godFood.png" />
+    <Image Include="Assets\Textures\FoodTextures\lemonFood.png" />
+    <Image Include="Assets\Textures\FoodTextures\mysteriousFood.png" />
+    <Image Include="Assets\Textures\FoodTextures\rottenFood.png" />
+    <Image Include="Assets\Textures\FoodTextures\spicyFood.png" />
+    <Image Include="Assets\Textures\SnakeTextures\Face.png" />
+    <Image Include="Assets\Textures\SnakeTextures\Head.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SavedData\BestScores.json" />
