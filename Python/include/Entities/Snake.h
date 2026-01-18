@@ -35,7 +35,7 @@ private:
 
 	sf::Vector2i lastActualDirection;
 
-	float snakeMaxMoveTime = 0.18f;
+	float snakeMaxMoveTime = 0.23f;
 	float snakeMoveTimer = 0.0f;
 
 	char currentDirection; //MA£E LITERY!!!! 'w'-góra 's'-dó³ 'a'-lewo 'd'-prawo
