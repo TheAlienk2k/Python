@@ -334,14 +334,11 @@ public:
 				
 				sf::FloatRect textRect = foodCount.getLocalBounds();
 
-				// 2. Ustaw Origin na PRAWY DOLNY RÓG tekstu, u¿ywaj¹c .size.x i .size.y
 				foodCount.setOrigin(sf::Vector2f(
-					textRect.position.x + textRect.size.x,  // Origin X = Offset X + Szerokoœæ
-					textRect.position.y + textRect.size.y   // Origin Y = Offset Y + Wysokoœæ
+					textRect.position.x + textRect.size.x,
+					textRect.position.y + textRect.size.y
 				));
 
-				// 3. Ustaw Pozycjê na PRAWY DOLNY RÓG bloku iconBlock.
-				// Dziêki Origin ustawionemu w kroku 2, tekst bêdzie idealnie przylega³.
 				foodCount.setPosition(sf::Vector2f(
 					iconBlock.getPosition().x + iconBlock.getSize().x,
 					iconBlock.getPosition().y + iconBlock.getSize().y

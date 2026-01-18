@@ -182,7 +182,6 @@ void Snake::snakeEat(std::unique_ptr<Food> food) {
 void Snake::updateEffects(float deltaTime) {
 	if (!isAlive) { return; }
 
-
 	for (auto it = currentEffects.begin(); it != currentEffects.end(); ) {
 		std::vector<ActiveEffect>& effects = it->second;
 
